@@ -2,6 +2,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconSearch, IconCalendar, IconFilter, IconChevronDown } from './Icons';
 
+interface TransactionFiltersProps {
+  actions?: React.ReactNode;
+}
+
 // Date Range Picker Component
 const DateRangePicker = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,13 +38,13 @@ const DateRangePicker = () => {
     <div className="relative w-full sm:w-auto" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full sm:w-56 flex items-center justify-between px-3 py-1.5 text-sm border rounded-lg transition-colors shadow-sm bg-white hover:bg-slate-50 ${isOpen ? 'border-blue-500 ring-1 ring-blue-500/20' : 'border-slate-200 text-slate-700'}`}
+        className={`w-full sm:w-48 flex items-center justify-between px-3 py-1.5 text-sm border rounded-lg transition-colors shadow-sm bg-white hover:bg-slate-50 ${isOpen ? 'border-blue-500 ring-1 ring-blue-500/20' : 'border-slate-200 text-slate-700'}`}
       >
         <div className="flex items-center gap-2">
            <IconCalendar className="w-4 h-4 text-slate-400" />
-           <span className="font-medium">{selectedRange}</span>
+           <span className="font-medium truncate">{selectedRange}</span>
         </div>
-        <IconChevronDown className={`w-3.5 h-3.5 transition-transform text-slate-400 ${isOpen ? 'rotate-180' : ''}`} />
+        <IconChevronDown className={`w-3.5 h-3.5 transition-transform text-slate-400 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
@@ -228,7 +232,7 @@ const MoreFiltersDropdown = ({
     );
 };
 
-const TransactionFilters: React.FC = () => {
+const TransactionFilters: React.FC<TransactionFiltersProps> = ({ actions }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const toggleDropdown = (name: string) => {
@@ -238,8 +242,8 @@ const TransactionFilters: React.FC = () => {
   return (
     <div className="bg-white border-b border-slate-200 px-4 py-3 flex flex-col xl:flex-row xl:items-center justify-between gap-4 font-sans">
       
-      {/* Left Group: Search & Date */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full xl:w-auto">
+      {/* Left Group: Search, Date & Filters */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full xl:w-auto flex-wrap">
         <div className="relative w-full sm:w-64">
           <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
           <input 
@@ -249,13 +253,10 @@ const TransactionFilters: React.FC = () => {
           />
         </div>
 
-        {/* New Date Range Picker */}
+        {/* Date Range Picker */}
         <DateRangePicker />
-      </div>
 
-      {/* Right Group: Filters */}
-      <div className="flex flex-wrap items-center gap-2 justify-end">
-         {/* High Priority Filters */}
+        {/* Filters moved to Left Side */}
          <FilterDropdown 
             label="Type: All" 
             isOpen={openDropdown === 'type'} 
@@ -272,12 +273,16 @@ const TransactionFilters: React.FC = () => {
             options={['Approved', 'Pending', 'Failed', 'Declined', 'Expired']}
          />
 
-         {/* Secondary Filters */}
          <MoreFiltersDropdown 
             isOpen={openDropdown === 'more'}
             onToggle={() => toggleDropdown('more')}
             onClose={() => setOpenDropdown(null)}
          />
+      </div>
+
+      {/* Right Group: Actions (Export/Refresh) */}
+      <div className="flex items-center gap-2 justify-end">
+         {actions}
       </div>
     </div>
   );

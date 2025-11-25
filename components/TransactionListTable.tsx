@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { TransactionListItem, TransactionStatus } from '../types';
+import { IconArrowRight } from './Icons';
 
 interface Props {
   transactions: TransactionListItem[];
@@ -34,24 +35,23 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
     <div className="w-full overflow-x-auto custom-scrollbar h-full flex flex-col font-sans">
       <table className="w-full text-left border-collapse min-w-[1500px]">
         <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b border-slate-200">
-          <tr className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <tr className="text-xs font-bold text-slate-500">
             {/* Financial & Time Context (First) */}
-            <th className="px-3 py-2.5 whitespace-nowrap">Creation date</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Reference number</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Type</th>
-            <th className="px-3 py-2.5 whitespace-nowrap text-right">Gross amount</th>
-            <th className="px-3 py-2.5 whitespace-nowrap text-right">Amount</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Status</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Creation date</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Reference number</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Type</th>
+            <th className="px-3 py-3 whitespace-nowrap text-right font-semibold">Gross amount</th>
+            <th className="px-3 py-3 whitespace-nowrap text-right font-semibold">Amount</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Status</th>
             
-            {/* Counterparties (Second) */}
-            <th className="px-3 py-2.5 whitespace-nowrap">Payer wallet ID</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Payee wallet ID</th>
+            {/* Flow (Merged) */}
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Flow (Source → Destination)</th>
             
             {/* Metadata (Last) */}
-            <th className="px-3 py-2.5 whitespace-nowrap">Payment method</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">School</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Serial number</th>
-            <th className="px-3 py-2.5 whitespace-nowrap">Message</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Payment method</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">School</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Serial number</th>
+            <th className="px-3 py-3 whitespace-nowrap font-semibold">Message</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 bg-white text-xs">
@@ -93,14 +93,13 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
                 </span>
               </td>
 
-              {/* Payer */}
-              <td className="px-3 py-2 font-mono text-slate-600 whitespace-nowrap">
-                {tx.payerWalletId}
-              </td>
-
-              {/* Payee */}
-              <td className="px-3 py-2 font-mono text-slate-600 whitespace-nowrap">
-                {tx.payeeWalletId}
+              {/* Flow (Merged) */}
+              <td className="px-3 py-2 whitespace-nowrap">
+                <div className="flex items-center gap-2 font-mono text-xs">
+                   <span className="text-slate-500 max-w-[120px] truncate" title={tx.payerWalletId}>{tx.payerWalletId}</span>
+                   <IconArrowRight className="w-3 h-3 text-slate-300 flex-shrink-0" />
+                   <span className="text-slate-900 font-medium max-w-[120px] truncate" title={tx.payeeWalletId}>{tx.payeeWalletId}</span>
+                </div>
               </td>
 
               {/* Payment Method */}
@@ -134,7 +133,7 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
                 <td className="px-3 py-2.5 text-right font-mono">
                     {totals.net.toLocaleString()} <span className="text-[10px] text-slate-500">{totals.currency}</span>
                 </td>
-                <td className="px-3 py-2.5" colSpan={7}></td>
+                <td className="px-3 py-2.5" colSpan={6}></td>
             </tr>
         </tfoot>
       </table>

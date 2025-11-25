@@ -10,7 +10,7 @@ interface Props {
   onRowClick: (id: string) => void;
 }
 
-// Helper to generate 50 mock items
+// Helper to generate mock items
 const generateMockTransactions = (count: number): TransactionListItem[] => {
   const types: TransactionType[] = ['Funds in', 'Wallet Top Up', 'Withdrawal', 'Payment', 'Bill Payment', 'Deactivation Transfer'];
   const statuses = [TransactionStatus.APPROVED, TransactionStatus.PENDING, TransactionStatus.FAILED, TransactionStatus.EXPIRED, TransactionStatus.DECLINED];
@@ -41,49 +41,58 @@ const generateMockTransactions = (count: number): TransactionListItem[] => {
   });
 };
 
-const MOCK_LIST_DATA = generateMockTransactions(50);
-
 const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  
+  // Memoize data generation to avoid regeneration on every render, 
+  // but update when itemsPerPage changes (simulating backend fetch)
+  const transactionData = useMemo(() => {
+    return generateMockTransactions(itemsPerPage);
+  }, [itemsPerPage]);
   
   // Calculate totals for the footer
   const totals = useMemo(() => {
-    return MOCK_LIST_DATA.reduce((acc, curr) => {
+    return transactionData.reduce((acc, curr) => {
       return {
         gross: acc.gross + curr.grossAmount.amount,
         net: acc.net + curr.amount.amount,
         currency: curr.grossAmount.currency
       };
     }, { gross: 0, net: 0, currency: 'CFA' });
-  }, []);
+  }, [transactionData]);
 
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col bg-white font-sans">
       
       {/* 1. Page Header */}
-      <div className="px-4 py-4 border-b border-slate-200 flex-shrink-0 bg-white">
+      <div className="px-4 py-3 border-b border-slate-200 flex-shrink-0 bg-white">
         <div className="flex items-center justify-between">
            <div>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">Transactions</h1>
+              <h1 className="text-lg font-bold text-slate-900 tracking-tight">Transactions</h1>
            </div>
-           <div className="flex items-center gap-2">
-               <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">
-                  <IconDownload className="w-4 h-4" /> Export
-               </button>
-               <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">
-                  <IconRefresh className="w-4 h-4" /> Refresh data
-               </button>
-           </div>
+           {/* Actions moved to Filter Bar below */}
         </div>
       </div>
 
-      {/* 2. Filters Toolbar */}
-      <TransactionFilters />
+      {/* 2. Filters Toolbar with Actions */}
+      <TransactionFilters 
+        actions={
+          <>
+            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-sm">
+              <IconDownload className="w-3.5 h-3.5" /> Export
+            </button>
+            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-sm">
+              <IconRefresh className="w-3.5 h-3.5" /> Refresh data
+            </button>
+          </>
+        }
+      />
 
       {/* 3. Table Area */}
       <div className="flex-1 overflow-hidden bg-white relative">
           <div className="absolute inset-0 overflow-auto">
              <TransactionListTable 
-                transactions={MOCK_LIST_DATA} 
+                transactions={transactionData} 
                 onRowClick={onRowClick} 
                 totals={totals}
              />
@@ -91,8 +100,11 @@ const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
       </div>
 
       {/* 4. Pagination */}
-      <div className="border-t border-slate-200 bg-white px-2 py-2 flex-shrink-0 z-10">
-          <Pagination />
+      <div className="flex-shrink-0 z-10">
+          <Pagination 
+            itemsPerPage={itemsPerPage} 
+            onItemsPerPageChange={setItemsPerPage}
+          />
       </div>
 
     </div>
