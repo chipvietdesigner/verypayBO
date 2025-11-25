@@ -110,10 +110,10 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
       <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
         <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-          Funds Flow Analysis
+          Funds Flow
         </h3>
         <div className="text-xs text-slate-500 font-medium">
-          Ref: <span className="font-mono text-slate-700">Internal Ledger Reconciliation</span>
+          Ref: <span className="font-mono text-slate-700">Ledger</span>
         </div>
       </div>
 
