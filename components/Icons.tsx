@@ -44,10 +44,7 @@ import {
   Search,
   ChevronLeft,
   TrendingUp,
-  RotateCw,
-  BarChart3,
-  Activity,
-  Zap
+  RotateCw
 } from 'lucide-react';
 
 interface IconProps {
@@ -70,9 +67,6 @@ export const IconAlertCircle = ({ className }: IconProps) => <AlertCircle classN
 export const IconClock = ({ className }: IconProps) => <Clock className={className || "w-5 h-5"} />;
 export const IconTrendingUp = ({ className }: IconProps) => <TrendingUp className={className || "w-5 h-5"} />;
 export const IconRefresh = ({ className }: IconProps) => <RotateCw className={className || "w-4 h-4"} />;
-export const IconBarChart = ({ className }: IconProps) => <BarChart3 className={className || "w-4 h-4"} />;
-export const IconActivity = ({ className }: IconProps) => <Activity className={className || "w-4 h-4"} />;
-export const IconZap = ({ className }: IconProps) => <Zap className={className || "w-4 h-4"} />;
 
 // Sidebar & Nav Icons
 export const IconDashboard = ({ className }: IconProps) => <LayoutDashboard className={className || "w-5 h-5"} />;

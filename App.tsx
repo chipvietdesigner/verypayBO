@@ -3,7 +3,6 @@ import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 import TransactionListView from './components/TransactionListView';
 import TransactionDetailView from './components/TransactionDetailView';
-import GlobalOverview from './components/GlobalOverview';
 import { TransactionStatus, TransactionData, TransactionType } from './types';
 
 // Helper to generate detail data based on selected row info
@@ -156,16 +155,13 @@ const getMockDetailData = (id: string, type: TransactionType, reference: string,
 };
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'list' | 'detail' | 'overview'>('list');
+  const [currentView, setCurrentView] = useState<'list' | 'detail'>('list');
   const [selectedTx, setSelectedTx] = useState<TransactionData | null>(null);
 
   const handleNavigate = (view: string) => {
     if (view === 'transactions') {
       setCurrentView('list');
       setSelectedTx(null);
-    } else if (view === 'overview') {
-       setCurrentView('overview');
-       setSelectedTx(null);
     }
   };
 
@@ -173,6 +169,9 @@ const App: React.FC = () => {
     // In a real app, we would find the item by ID from the list data
     // Here we will simulate finding it by mocking the list data access 
     // or just generating it based on the clicked row's known properties if we passed them.
+    // For this demo, I need to know which type was clicked. 
+    // I'll grab the raw list item from a local constant in TransactionListView (conceptually)
+    // To make it simple, let's look up from a shared mock source or just pass the type.
     
     // Quick Hack: Find the item in the mock data defined in the view (conceptually lifted here)
     const mockList = [
@@ -201,18 +200,6 @@ const App: React.FC = () => {
     setSelectedTx(null);
   };
 
-  const renderContent = () => {
-    switch (currentView) {
-      case 'overview':
-        return <GlobalOverview />;
-      case 'detail':
-        return selectedTx ? <TransactionDetailView data={selectedTx} onBack={handleBack} /> : null;
-      case 'list':
-      default:
-        return <TransactionListView onRowClick={handleRowClick} />;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#f3f4f6] font-sans text-slate-900">
       <TopBar />
@@ -220,7 +207,13 @@ const App: React.FC = () => {
       
       {/* Main Content Wrapper */}
       <div className="pt-14 lg:pl-64 transition-all duration-300 h-screen overflow-hidden">
-        {renderContent()}
+        {currentView === 'list' ? (
+          <TransactionListView onRowClick={handleRowClick} />
+        ) : (
+          <div className="h-full overflow-y-auto">
+             {selectedTx && <TransactionDetailView data={selectedTx} onBack={handleBack} />}
+          </div>
+        )}
       </div>
     </div>
   );

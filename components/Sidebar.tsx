@@ -20,7 +20,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, hasSubmenu, is
   <div 
     onClick={onClick}
     className={`
-      flex items-center justify-between px-4 py-2 cursor-pointer text-sm font-medium transition-colors border-l-4
+      flex items-center justify-between px-4 py-2 cursor-pointer text-sm font-regular text-slate-800 border-l-4
       ${isActive ? 'bg-red-50 text-red-700 border-red-600' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent'}
     `}
   >
@@ -44,7 +44,7 @@ const GroupHeader = ({ title, isExpanded, onToggle }: { title: string, isExpande
     onClick={onToggle}
     className="px-4 mt-6 mb-2 flex items-center justify-between cursor-pointer group select-none"
   >
-    <div className="text-[10px] font-bold text-slate-800 uppercase tracking-wider group-hover:text-black transition-colors">
+    <div className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider group-hover:text-black transition-colors">
       {title}
     </div>
     <IconChevronDown 
@@ -161,11 +161,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
         
         {expandedGroups.global && (
           <nav className="space-y-0.5 mb-4 transition-all duration-300">
-            <NavItem 
-              icon={<IconDashboard className={iconClass} />} 
-              label="Overview" 
-              onClick={() => onNavigate && onNavigate('overview')}
-            />
+            <NavItem icon={<IconDashboard className={iconClass} />} label="Overview" />
             <NavItem icon={<IconSettings className={iconClass} />} label="Configuration" />
             <NavItem icon={<IconTenants className={iconClass} />} label="Tenants" />
             <NavItem icon={<IconUsers className={iconClass} />} label="Master admins" />
@@ -199,7 +195,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
             <NavItem 
               icon={<IconTransaction className={iconClass} />} 
               label="Transactions" 
-              isActive={false} // Removed hardcoded active
+              isActive 
               onClick={() => onNavigate && onNavigate('transactions')}
             />
             <NavItem icon={<IconInvoice className={iconClass} />} label="Invoices" hasSubmenu />

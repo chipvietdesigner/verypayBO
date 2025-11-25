@@ -42,7 +42,7 @@ const FlowStep = ({
           <Icon className={`w-5 h-5 ${iconColor}`} />
           <div>
             <div className="text-sm font-bold text-slate-800">{title}</div>
-            <div className="text-[10px] text-slate-500 font-mono mt-0.5 uppercase tracking-wide">Processed</div>
+            <div className="text-[10px] text-slate-500 font-medium mt-0.5">Processed</div>
           </div>
         </div>
         <div className="text-right">
@@ -50,7 +50,7 @@ const FlowStep = ({
             {type === 'fee' ? '-' : ''}{amount}
           </div>
           {details && (
-             <button className="text-[10px] text-slate-400 flex items-center justify-end gap-1 w-full mt-1 hover:text-slate-600">
+             <button className="text-[10px] text-slate-500 flex items-center justify-end gap-1 w-full mt-1 hover:text-slate-700 font-medium">
                 Details <IconChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
              </button>
           )}
@@ -83,7 +83,7 @@ const PartyCard = ({
     
     <div className="flex justify-between items-start mb-4">
       <div>
-        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{label}</h3>
+        <h3 className="text-xs font-bold text-slate-600 mb-1">{label}</h3>
         <div className="flex items-center gap-1.5 text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">
           <IconWallet className="w-3.5 h-3.5 text-slate-400" />
           <span className="font-mono text-xs font-medium">{walletId}</span>
@@ -96,7 +96,7 @@ const PartyCard = ({
 
     <div className="mt-auto">
       <div className="flex justify-between items-end border-t border-slate-200 pt-3">
-        <span className="text-xs text-slate-500 font-medium">{isSource ? 'Total Debited' : 'Total Credited'}</span>
+        <span className="text-xs text-slate-600 font-semibold">{isSource ? 'Total Debited' : 'Total Credited'}</span>
         <span className={`text-xl font-bold font-mono ${isSource ? 'text-indigo-700' : 'text-emerald-700'}`}>
           {amount}
         </span>
@@ -110,7 +110,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
       <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
         <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-          Funds Flow
+          Funds flow
         </h3>
         <div className="text-xs text-slate-500 font-medium">
           Ref: <span className="font-mono text-slate-700">Ledger</span>
