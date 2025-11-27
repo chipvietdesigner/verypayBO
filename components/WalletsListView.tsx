@@ -7,7 +7,7 @@ interface Props {
   onWalletClick: (id: string) => void;
 }
 
-const WalletRow = ({ wallet, onClick }: { wallet: Wallet; onClick: () => void }) => {
+const WalletRow: React.FC<{ wallet: Wallet; onClick: () => void }> = ({ wallet, onClick }) => {
   const isFeeAccount = wallet.type === 'Fee';
   const isNegative = wallet.balance.amount < 0;
 

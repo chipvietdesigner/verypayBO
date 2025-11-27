@@ -49,8 +49,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
 
   if (isTerminalState && data.completedDate) {
       timeLabel = 'Completion date';
-      timeValue = data.completedDate.split(' ')[0];
-      timeSubValue = data.completedDate.split(' ')[1];
+      timeValue = data.completedDate;
       
       // Icon reflects the specific terminal state
       if (data.status === TransactionStatus.APPROVED) {
@@ -80,8 +79,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
          />
          <InfoItem 
             label="Creation date" 
-            value={data.creationDate.split(' ')[0]}
-            subValue={data.creationDate.split(' ')[1]}
+            value={data.creationDate}
             icon={<IconCalendar className="w-3 h-3" />}
          />
          {/* Dynamic Time Field */}
@@ -144,8 +142,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
          <div className="px-4 py-3 border-r border-slate-200">
             <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
-                    <IconUser className="w-3.5 h-3.5 text-slate-400" />
-                    User Remark
+                    Remark
                 </span>
             </div>
             <div className="bg-white border border-slate-200 rounded p-2.5 font-mono text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
@@ -157,8 +154,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
          <div className="px-4 py-3">
             <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
-                    <IconAlertCircle className="w-3.5 h-3.5 text-slate-400" />
-                    System Response
+                    Message
                 </span>
             </div>
             <div className="bg-white border border-slate-200 rounded p-2.5 font-mono text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">

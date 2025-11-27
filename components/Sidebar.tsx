@@ -154,7 +154,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactio
         {expandedGroups.general && (
           <nav className="space-y-0.5 transition-all duration-300">
             <NavItem icon={<IconHome className={iconClass} />} label="Home" />
-            <NavItem icon={<IconSchool className={iconClass} />} label="Schools" />
           </nav>
         )}
 
@@ -166,6 +165,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactio
         />
         {expandedGroups.operations && (
           <nav className="space-y-0.5 transition-all duration-300">
+          <NavItem icon={<IconSchool className={iconClass} />} label="Schools" />
             {/* Academic Operations */}
             <NavItem 
               icon={<IconStudent className={iconClass} />} 

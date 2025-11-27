@@ -14,11 +14,11 @@ interface Props {
 const generateMockTransactions = (count: number): TransactionListItem[] => {
   const types: TransactionType[] = ['Funds in', 'Wallet Top Up', 'Withdrawal', 'Payment', 'Deactivation Transfer'];
   
-  // Weighted statuses: More Approved than others
+  // Weighted statuses: More Approved than others. REMOVED PENDING per request.
   const statuses = [
       TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, 
       TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, 
-      TransactionStatus.PENDING, 
+      // TransactionStatus.PENDING, // Removed
       TransactionStatus.FAILED, 
       TransactionStatus.DECLINED
   ];
@@ -42,7 +42,7 @@ const generateMockTransactions = (count: number): TransactionListItem[] => {
     let message = 'Success';
     if (status === TransactionStatus.FAILED) message = 'Insufficient funds';
     else if (status === TransactionStatus.DECLINED) message = 'Risk threshold exceeded';
-    else if (status === TransactionStatus.PENDING) message = 'Awaiting provider confirmation';
+    // Removed PENDING message case
 
     return {
       id,

@@ -58,6 +58,7 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
           fee={{ currency: 'UGX', amount: 10 }} 
           netAmount={data.amount}
           transactionType={data.type}
+          status={data.status}
         />
 
         {/* Ledger */}
