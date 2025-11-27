@@ -16,7 +16,6 @@ export type TransactionType =
   | 'Withdrawal'
   | 'Payment'
   | 'Merchant Payment'
-  | 'Bill Payment'
   | 'External Transfer';
 
 export interface MoneyValue {
@@ -58,10 +57,12 @@ export interface LedgerEntry {
 export interface TransactionData {
   reference: string;
   creationDate: string;
-  expiryTime?: string;
+  completedDate?: string; // New: For approved txs
+  expiryTime?: string;    // Existing: For pending txs
   location: string;
+  requestAmount: MoneyValue; // New: Original user input
   grossAmount: MoneyValue;
-  amount: MoneyValue; // Net Amount often referred to just as Amount in display
+  amount: MoneyValue; // Net Amount
   posId: string;
   tokenId?: string;
   paymentMethod: string;
@@ -73,15 +74,14 @@ export interface TransactionData {
   payee: PartyDetails;
   commissions: CommissionDistribution;
   ledger: LedgerEntry[];
-  type: TransactionType; // Added type here for detail view context
+  type: TransactionType;
 }
 
 export interface TransactionListItem {
   id: string;
   reference: string;
   date: string;
-  grossAmount: MoneyValue;
-  amount: MoneyValue;
+  requestAmount: MoneyValue;
   type: TransactionType;
   payerWalletId: string;
   payeeWalletId: string;
@@ -90,4 +90,37 @@ export interface TransactionListItem {
   school: string;
   paymentMethod: string;
   serialNumber: string;
+}
+
+export interface Wallet {
+  id: string;
+  name: string;
+  accountNumber: string;
+  provider: string; // e.g. 'VeryPay', 'Airtel', 'MTN', 'Yo!'
+  balance: MoneyValue;
+  lastReconciliation: string;
+  type: 'Internal' | 'External' | 'Fee';
+}
+
+export interface WalletStatementMetrics {
+  periodStart: string;
+  periodEnd: string;
+  openingBalance: MoneyValue;
+  closingBalance: MoneyValue;
+  totalDebits: MoneyValue;
+  totalCredits: MoneyValue;
+}
+
+export interface WalletLedgerItem {
+  id: string;
+  transactionId: string;
+  reference: string;
+  date: string;
+  description: string;
+  counterparty: string;
+  type: string;
+  debit?: MoneyValue;
+  credit?: MoneyValue;
+  balance: MoneyValue;
+  status: 'Reconciled' | 'Pending' | 'Uncleared';
 }

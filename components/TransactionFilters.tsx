@@ -2,8 +2,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconSearch, IconCalendar, IconFilter, IconChevronDown } from './Icons';
 
+export interface FilterState {
+  type: string[];
+  status: string[];
+}
+
 interface TransactionFiltersProps {
   actions?: React.ReactNode;
+  onApply: (filters: FilterState) => void;
 }
 
 // Date Range Picker Component
@@ -74,6 +80,8 @@ const FilterDropdown = ({
   isOpen, 
   onToggle, 
   onClose,
+  currentSelection,
+  onConfirm,
   icon
 }: { 
   label: string; 
@@ -81,11 +89,18 @@ const FilterDropdown = ({
   isOpen: boolean; 
   onToggle: () => void;
   onClose: () => void;
+  currentSelection: string[];
+  onConfirm: (items: string[]) => void;
   icon?: React.ReactNode;
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  // Local state for checking items before applying
-  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>(currentSelection);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCheckedItems(currentSelection);
+    }
+  }, [isOpen, currentSelection]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -104,7 +119,7 @@ const FilterDropdown = ({
   };
 
   const handleApply = () => {
-    console.log(`Applied filters for ${label}:`, checkedItems);
+    onConfirm(checkedItems);
     onClose();
   };
 
@@ -112,12 +127,12 @@ const FilterDropdown = ({
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={onToggle}
-        className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors shadow-sm whitespace-nowrap ${isOpen ? 'bg-slate-50 border-blue-500 text-blue-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+        className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors shadow-sm whitespace-nowrap ${isOpen || currentSelection.length > 0 ? 'bg-slate-50 border-blue-500 text-blue-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
       >
         {icon}
         <span>{label}</span>
-        {checkedItems.length > 0 && (
-          <span className="bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded-full">{checkedItems.length}</span>
+        {currentSelection.length > 0 && (
+          <span className="bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded-full">{currentSelection.length}</span>
         )}
         <IconChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180 text-blue-500' : 'text-slate-400'}`} />
       </button>
@@ -141,19 +156,18 @@ const FilterDropdown = ({
             ))}
           </div>
           
-          {/* Apply Button Section */}
           <div className="p-3 border-t border-slate-100 flex justify-end gap-2 bg-slate-50/50 rounded-b-lg">
              <button 
                 onClick={onClose}
                 className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700"
              >
-                Cancel
+                Close
              </button>
              <button 
                 onClick={handleApply}
                 className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded hover:bg-blue-700 shadow-sm"
              >
-                Apply
+                OK
              </button>
           </div>
         </div>
@@ -223,7 +237,7 @@ const MoreFiltersDropdown = ({
                         </div>
                         <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
                             <button onClick={onClose} className="text-xs text-slate-500 hover:text-slate-800 px-2 py-1">Reset</button>
-                            <button onClick={onClose} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 shadow-sm">Apply Filters</button>
+                            <button onClick={onClose} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 shadow-sm">OK</button>
                         </div>
                     </div>
                 </div>
@@ -232,11 +246,20 @@ const MoreFiltersDropdown = ({
     );
 };
 
-const TransactionFilters: React.FC<TransactionFiltersProps> = ({ actions }) => {
+const TransactionFilters: React.FC<TransactionFiltersProps> = ({ actions, onApply }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  
+  const [filters, setFilters] = useState<FilterState>({
+    type: [],
+    status: []
+  });
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
+  };
+
+  const updateFilter = (key: keyof FilterState, items: string[]) => {
+    setFilters(prev => ({ ...prev, [key]: items }));
   };
 
   return (
@@ -258,19 +281,23 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({ actions }) => {
 
         {/* Filters moved to Left Side */}
          <FilterDropdown 
-            label="Type: All" 
+            label="Type" 
             isOpen={openDropdown === 'type'} 
             onToggle={() => toggleDropdown('type')}
             onClose={() => setOpenDropdown(null)}
-            options={['Payment', 'Withdrawal', 'Funds in', 'Funds out', 'Wallet Top Up', 'Bill Payment']}
+            options={['Payment', 'Withdrawal', 'Funds in', 'Funds out', 'Wallet Top Up']}
+            currentSelection={filters.type}
+            onConfirm={(items) => updateFilter('type', items)}
          />
          
          <FilterDropdown 
-            label="Status: All" 
+            label="Status" 
             isOpen={openDropdown === 'status'} 
             onToggle={() => toggleDropdown('status')}
             onClose={() => setOpenDropdown(null)}
             options={['Approved', 'Pending', 'Failed', 'Declined', 'Expired']}
+            currentSelection={filters.status}
+            onConfirm={(items) => updateFilter('status', items)}
          />
 
          <MoreFiltersDropdown 
@@ -278,6 +305,16 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({ actions }) => {
             onToggle={() => toggleDropdown('more')}
             onClose={() => setOpenDropdown(null)}
          />
+
+         {/* Visual Separator & Apply Button */}
+         <div className="h-8 w-px bg-slate-200 mx-1 hidden xl:block"></div>
+         
+         <button 
+            onClick={() => onApply(filters)}
+            className="flex items-center gap-2 px-4 py-1.5 text-sm font-bold text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-all active:scale-95"
+         >
+            Apply
+         </button>
       </div>
 
       {/* Right Group: Actions (Export/Refresh) */}

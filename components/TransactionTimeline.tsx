@@ -62,7 +62,7 @@ const TransactionTimeline = () => {
                </div>
                <div className="flex justify-between items-center">
                   <span className="text-slate-500">From</span>
-                  <span className="font-mono text-slate-700">25056521346695</span>
+                  <span className="   text-slate-700">25056521346695</span>
                </div>
                <div className="flex justify-between items-center">
                   <span className="text-slate-500">To</span>
@@ -94,7 +94,7 @@ const TransactionTimeline = () => {
                </div>
                <div className="flex justify-between items-center">
                   <span className="text-slate-500">To</span>
-                  <span className="font-mono text-slate-700">25611000000002</span>
+                  <span className="   text-slate-700">25611000000002</span>
                </div>
                <button 
                   onClick={() => setShowMoreFee(!showMoreFee)}
@@ -125,7 +125,7 @@ const TransactionTimeline = () => {
                </div>
                <div className="flex justify-between items-center">
                   <span className="text-slate-500">To</span>
-                  <span className="font-mono text-slate-700">25056521346695</span>
+                  <span className="   text-slate-700">25056521346695</span>
                </div>
                <button 
                   onClick={() => setShowMoreDisburse(!showMoreDisburse)}

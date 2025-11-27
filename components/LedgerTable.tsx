@@ -33,7 +33,7 @@ const LedgerTable: React.FC<Props> = ({ entries }) => {
               <tr key={entry.id} className="hover:bg-slate-50/80 transition-colors">
                 {/* Account */}
                 <td className="px-4 py-2.5">
-                  <a href="#" className="text-blue-600 hover:text-blue-800 font-mono text-xs hover:underline">
+                  <a href="#" className="text-blue-600 hover:text-blue-800    text-xs hover:underline">
                     {entry.account}
                   </a>
                 </td>
@@ -52,17 +52,17 @@ const LedgerTable: React.FC<Props> = ({ entries }) => {
                 </td>
 
                 {/* Amount-Currency */}
-                <td className="px-4 py-2.5 text-xs font-mono font-medium text-slate-900">
+                <td className="px-4 py-2.5 text-xs    font-medium text-slate-900">
                    {entry.amount.amount.toLocaleString()} <span className="text-[10px] text-slate-500">{entry.amount.currency}</span>
                 </td>
 
                 {/* Opening Balance */}
-                <td className="px-4 py-2.5 text-xs font-mono text-slate-500">
+                <td className="px-4 py-2.5 text-xs    text-slate-500">
                   {entry.openingBalance ? entry.openingBalance.amount.toLocaleString() : '--'}
                 </td>
 
                 {/* Closing Balance */}
-                <td className="px-4 py-2.5 text-xs font-mono text-slate-500">
+                <td className="px-4 py-2.5 text-xs    text-slate-500">
                   {entry.closingBalance ? entry.closingBalance.amount.toLocaleString() : '--'}
                 </td>
 
@@ -74,7 +74,7 @@ const LedgerTable: React.FC<Props> = ({ entries }) => {
                 </td>
 
                 {/* Datetime */}
-                <td className="px-4 py-2.5 text-slate-500 text-[10px] font-mono">{entry.dateTime}</td>
+                <td className="px-4 py-2.5 text-slate-500 text-[10px]   ">{entry.dateTime}</td>
               </tr>
             ))}
           </tbody>

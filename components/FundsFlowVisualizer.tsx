@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { PartyDetails, MoneyValue, TransactionData } from '../types';
+import { PartyDetails, MoneyValue } from '../types';
 import { IconWallet, IconBuilding, IconChevronDown, IconCheckCircle, IconArrowRight, IconMinusCircle, IconPlusCircle } from './Icons';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   grossAmount: MoneyValue;
   fee: MoneyValue;
   netAmount: MoneyValue;
+  transactionType?: string;
 }
 
 const formatMoney = (mv: MoneyValue) => {
@@ -46,7 +48,7 @@ const FlowStep = ({
           </div>
         </div>
         <div className="text-right">
-          <div className={`text-sm font-bold font-mono ${type === 'fee' ? 'text-red-600' : 'text-slate-900'}`}>
+          <div className={`text-sm font-bold    ${type === 'fee' ? 'text-red-600' : 'text-slate-900'}`}>
             {type === 'fee' ? '-' : ''}{amount}
           </div>
           {details && (
@@ -86,7 +88,7 @@ const PartyCard = ({
         <h3 className="text-xs font-bold text-slate-600 mb-1">{label}</h3>
         <div className="flex items-center gap-1.5 text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">
           <IconWallet className="w-3.5 h-3.5 text-slate-400" />
-          <span className="font-mono text-xs font-medium">{walletId}</span>
+          <span className="   text-xs font-medium">{walletId}</span>
         </div>
       </div>
       <div className={`p-2 rounded-full ${isSource ? 'bg-indigo-100 text-indigo-600' : 'bg-emerald-100 text-emerald-600'}`}>
@@ -97,7 +99,7 @@ const PartyCard = ({
     <div className="mt-auto">
       <div className="flex justify-between items-end border-t border-slate-200 pt-3">
         <span className="text-xs text-slate-600 font-semibold">{isSource ? 'Total Debited' : 'Total Credited'}</span>
-        <span className={`text-xl font-bold font-mono ${isSource ? 'text-indigo-700' : 'text-emerald-700'}`}>
+        <span className={`text-xl font-bold    ${isSource ? 'text-indigo-700' : 'text-emerald-700'}`}>
           {amount}
         </span>
       </div>
@@ -105,7 +107,11 @@ const PartyCard = ({
   </div>
 );
 
-const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, netAmount }) => {
+const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, netAmount, transactionType }) => {
+  
+  // Use simplified 2-step flow for Payments, Withdrawals, and Merchant Payments
+  const isSimpleFlow = ['Payment', 'Withdrawal', 'Merchant Payment'].includes(transactionType || '');
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
       <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
@@ -113,7 +119,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
           Funds flow
         </h3>
         <div className="text-xs text-slate-500 font-medium">
-          Ref: <span className="font-mono text-slate-700">Ledger</span>
+          Ref: <span className="   text-slate-700">Ledger</span>
         </div>
       </div>
 
@@ -140,66 +146,109 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
 
             <div className="space-y-4 bg-white/80 backdrop-blur-sm p-2 rounded-xl">
               
-              {/* Step 1: Collection */}
-              <FlowStep 
-                title="1. Collection" 
-                amount={formatMoney(grossAmount)} 
-                type="in"
-                details={
-                  <div className="space-y-2">
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Provider:</span>
-                        <span className="font-medium text-slate-800">Yo! Payments</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Method:</span>
-                        <span className="font-medium text-slate-800">Mobile Money (External)</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Intermediate Acc:</span>
-                        <span className="font-mono text-slate-600">VeryPay OVA</span>
-                     </div>
-                  </div>
-                }
-              />
+              {/* CONDITIONAL FLOW RENDERING */}
+              {isSimpleFlow ? (
+                  // Simplified 2-Step Flow for Payments/Withdrawals
+                  <>
+                     <FlowStep 
+                        title="1. Request" 
+                        amount={formatMoney(grossAmount)} 
+                        type="in"
+                        details={
+                          <div className="space-y-2">
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Method:</span>
+                                <span className="font-medium text-slate-800">
+                                    {transactionType === 'Withdrawal' ? 'Withdrawal Request' : 'External Transfer'}
+                                </span>
+                             </div>
+                          </div>
+                        }
+                      />
+                      
+                      <FlowStep 
+                        title="2. Transfer" 
+                        amount={formatMoney(netAmount)} 
+                        type="out"
+                        details={
+                          <div className="space-y-2">
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Provider:</span>
+                                <span className="font-medium text-slate-800">VeryPay Internal</span>
+                             </div>
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">To Account:</span>
+                                <span className="text-slate-600">{payee.walletId}</span>
+                             </div>
+                          </div>
+                        }
+                      />
+                  </>
+              ) : (
+                  // Standard 3-Step Flow for other transactions
+                  <>
+                      {/* Step 1: Collection */}
+                      <FlowStep 
+                        title="1. Collection" 
+                        amount={formatMoney(grossAmount)} 
+                        type="in"
+                        details={
+                          <div className="space-y-2">
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Provider:</span>
+                                <span className="font-medium text-slate-800">Yo! Payments</span>
+                             </div>
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Method:</span>
+                                <span className="font-medium text-slate-800">Mobile Money (External)</span>
+                             </div>
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Intermediate Acc:</span>
+                                <span className="   text-slate-600">VeryPay OVA</span>
+                             </div>
+                          </div>
+                        }
+                      />
 
-              {/* Step 2: Fees */}
-              <FlowStep 
-                title="2. Fee Deduction" 
-                amount={formatMoney(fee)} 
-                type="fee"
-                details={
-                   <div className="space-y-2">
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Processing Fee:</span>
-                        <span className="font-mono text-red-600">{formatMoney(fee)}</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Recipient:</span>
-                        <span className="font-mono text-slate-600">25611000000002</span>
-                     </div>
-                  </div>
-                }
-              />
+                      {/* Step 2: Fees */}
+                      <FlowStep 
+                        title="2. Fee Deduction" 
+                        amount={formatMoney(fee)} 
+                        type="fee"
+                        details={
+                           <div className="space-y-2">
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Processing Fee:</span>
+                                <span className="   text-red-600">{formatMoney(fee)}</span>
+                             </div>
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Recipient:</span>
+                                <span className="   text-slate-600">25611000000002</span>
+                             </div>
+                          </div>
+                        }
+                      />
 
-              {/* Step 3: Disbursement */}
-              <FlowStep 
-                title="3. Disbursement" 
-                amount={formatMoney(netAmount)} 
-                type="out"
-                details={
-                  <div className="space-y-2">
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">Provider:</span>
-                        <span className="font-medium text-slate-800">VeryPay Internal</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span className="text-slate-500">From Account:</span>
-                        <span className="font-mono text-slate-600">VeryPay OVA</span>
-                     </div>
-                  </div>
-                }
-              />
+                      {/* Step 3: Disbursement */}
+                      <FlowStep 
+                        title="3. Disbursement" 
+                        amount={formatMoney(netAmount)} 
+                        type="out"
+                        details={
+                          <div className="space-y-2">
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">Provider:</span>
+                                <span className="font-medium text-slate-800">VeryPay Internal</span>
+                             </div>
+                             <div className="flex justify-between">
+                                <span className="text-slate-500">From Account:</span>
+                                <span className="   text-slate-600">VeryPay OVA</span>
+                             </div>
+                          </div>
+                        }
+                      />
+                  </>
+              )}
 
             </div>
           </div>

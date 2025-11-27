@@ -1,3 +1,4 @@
+
 import React from 'react';
 import TransactionInfo from './TransactionInfo';
 import FundsFlowVisualizer from './FundsFlowVisualizer';
@@ -25,7 +26,7 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
             
             <div className="flex flex-col">
                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-slate-400">Transactions / {data.reference}</span>
+                  <span className="text-xs font-medium text-slate-500">Transactions / {data.reference}</span>
                </div>
                <div className="flex items-center gap-3">
                   <h1 className="text-lg font-bold text-slate-900 leading-none">{data.type}</h1>
@@ -40,15 +41,6 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
                    </span>
                </div>
             </div>
-         </div>
-
-         <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 transition-colors shadow-sm">
-               <IconInvoice className="w-3.5 h-3.5" /> Download Receipt
-            </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-slate-900 border border-slate-900 rounded hover:bg-slate-800 transition-colors shadow-sm">
-               <IconCopy className="w-3.5 h-3.5" /> Copy Data
-            </button>
          </div>
       </div>
 
@@ -65,6 +57,7 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
           grossAmount={data.grossAmount}
           fee={{ currency: 'UGX', amount: 10 }} 
           netAmount={data.amount}
+          transactionType={data.type}
         />
 
         {/* Ledger */}

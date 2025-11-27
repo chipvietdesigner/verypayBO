@@ -5,10 +5,9 @@ import { IconArrowRight } from './Icons';
 
 interface Props {
   transactions: TransactionListItem[];
-  onRowClick: (id: string) => void;
+  onRowClick: (item: TransactionListItem) => void;
   totals: {
-    gross: number;
-    net: number;
+    amount: number;
     currency: string;
   };
 }
@@ -40,8 +39,7 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Creation date</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Reference number</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Type</th>
-            <th className="px-3 py-3 whitespace-nowrap text-right font-semibold">Gross amount</th>
-            <th className="px-3 py-3 whitespace-nowrap text-right font-semibold">Amount</th>
+            <th className="px-3 py-3 whitespace-nowrap text-right font-semibold">Requested amount</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Status</th>
             
             {/* Flow (Merged) */}
@@ -58,11 +56,11 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
           {transactions.map((tx) => (
             <tr 
               key={tx.id} 
-              onClick={() => onRowClick(tx.id)}
+              onClick={() => onRowClick(tx)}
               className="group hover:bg-blue-50/30 transition-colors cursor-pointer"
             >
               {/* Date */}
-              <td className="px-3 py-2 text-slate-600 whitespace-nowrap font-mono">
+              <td className="px-3 py-2 text-slate-600 whitespace-nowrap">
                 {tx.date}
               </td>
 
@@ -76,14 +74,9 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
                 {tx.type}
               </td>
 
-              {/* Gross Amount */}
-              <td className="px-3 py-2 text-right font-medium text-slate-900 whitespace-nowrap font-mono">
-                {tx.grossAmount.amount.toLocaleString()} <span className="text-[10px] text-slate-500">{tx.grossAmount.currency}</span>
-              </td>
-
-              {/* Amount */}
-              <td className="px-3 py-2 text-right font-medium text-slate-900 whitespace-nowrap font-mono">
-                {tx.amount.amount.toLocaleString()} <span className="text-[10px] text-slate-500">{tx.amount.currency}</span>
+              {/* Request Amount */}
+              <td className="px-3 py-2 text-right font-medium text-slate-900 whitespace-nowrap   ">
+                {tx.requestAmount.amount.toLocaleString()} <span className="text-[10px] text-slate-500">{tx.requestAmount.currency}</span>
               </td>
 
               {/* Status */}
@@ -128,10 +121,7 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
             <tr className="text-xs font-bold text-slate-800">
                 <td className="px-3 py-2.5" colSpan={3}>TOTAL</td>
                 <td className="px-3 py-2.5 text-right font-mono">
-                    {totals.gross.toLocaleString()} <span className="text-[10px] text-slate-500">{totals.currency}</span>
-                </td>
-                <td className="px-3 py-2.5 text-right font-mono">
-                    {totals.net.toLocaleString()} <span className="text-[10px] text-slate-500">{totals.currency}</span>
+                    {totals.amount.toLocaleString()} <span className="text-[10px] text-slate-500">{totals.currency}</span>
                 </td>
                 <td className="px-3 py-2.5" colSpan={6}></td>
             </tr>

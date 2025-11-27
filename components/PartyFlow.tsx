@@ -23,7 +23,7 @@ const PartyCard: React.FC<{ title: string; data: PartyDetails; type: 'payer' | '
         </h3>
         <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded cursor-pointer hover:bg-blue-100">
           <IconWallet />
-          <span className="font-mono max-w-[100px] truncate">{data.walletId}</span>
+          <span className="   max-w-[100px] truncate">{data.walletId}</span>
         </div>
       </div>
 

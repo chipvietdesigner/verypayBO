@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   ArrowLeft, 
@@ -44,7 +45,13 @@ import {
   Search,
   ChevronLeft,
   TrendingUp,
-  RotateCw
+  RotateCw,
+  AlertTriangle,
+  Activity,
+  BarChart3,
+  TrendingDown,
+  Printer,
+  XCircle
 } from 'lucide-react';
 
 interface IconProps {
@@ -66,7 +73,13 @@ export const IconDownload = ({ className }: IconProps) => <Download className={c
 export const IconAlertCircle = ({ className }: IconProps) => <AlertCircle className={className || "w-5 h-5"} />;
 export const IconClock = ({ className }: IconProps) => <Clock className={className || "w-5 h-5"} />;
 export const IconTrendingUp = ({ className }: IconProps) => <TrendingUp className={className || "w-5 h-5"} />;
+export const IconTrendingDown = ({ className }: IconProps) => <TrendingDown className={className || "w-5 h-5"} />;
 export const IconRefresh = ({ className }: IconProps) => <RotateCw className={className || "w-4 h-4"} />;
+export const IconAlertTriangle = ({ className }: IconProps) => <AlertTriangle className={className || "w-4 h-4"} />;
+export const IconActivity = ({ className }: IconProps) => <Activity className={className || "w-4 h-4"} />;
+export const IconChart = ({ className }: IconProps) => <BarChart3 className={className || "w-4 h-4"} />;
+export const IconPrinter = ({ className }: IconProps) => <Printer className={className || "w-4 h-4"} />;
+export const IconFileText = ({ className }: IconProps) => <FileText className={className || "w-4 h-4"} />;
 
 // Sidebar & Nav Icons
 export const IconDashboard = ({ className }: IconProps) => <LayoutDashboard className={className || "w-5 h-5"} />;
@@ -94,6 +107,7 @@ export const IconRevenue = ({ className }: IconProps) => <PieChart className={cl
 export const IconReport = ({ className }: IconProps) => <FileText className={className || "w-5 h-5"} />;
 export const IconNotification = ({ className }: IconProps) => <Bell className={className || "w-5 h-5"} />;
 export const IconAdmin = ({ className }: IconProps) => <User className={className || "w-5 h-5"} />;
+export const IconUser = ({ className }: IconProps) => <User className={className || "w-5 h-5"} />;
 
 export const IconLogout = ({ className }: IconProps) => <LogOut className={className || "w-4 h-4"} />;
 export const IconGlobe = ({ className }: IconProps) => <Globe className={className || "w-4 h-4"} />;
@@ -108,6 +122,7 @@ export const IconArrowRight = ({ className }: IconProps) => <ArrowRight classNam
 export const IconPlusCircle = ({ className }: IconProps) => <PlusCircle className={className || "w-5 h-5"} />;
 export const IconMinusCircle = ({ className }: IconProps) => <MinusCircle className={className || "w-5 h-5"} />;
 export const IconCheckCircle = ({ className }: IconProps) => <CheckCircle className={className || "w-5 h-5"} />;
+export const IconXCircle = ({ className }: IconProps) => <XCircle className={className || "w-5 h-5"} />;
 export const IconFilter = ({ className }: IconProps) => <Filter className={className || "w-4 h-4"} />;
 export const IconSearch = ({ className }: IconProps) => <Search className={className || "w-4 h-4"} />;
 export const IconCalendar = ({ className }: IconProps) => <Calendar className={className || "w-4 h-4"} />;
