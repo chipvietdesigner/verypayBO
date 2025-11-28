@@ -43,8 +43,8 @@ const FlowStep = ({
       Icon = IconXCircle;
   } else {
       // Use subtle colors for icons only to distinguish types, but keep containers neutral
-      iconColor = 'text-emerald-600';
-      Icon = IconCheckCircle;
+      iconColor = type === 'in' ? 'text-emerald-600' : type === 'fee' ? 'text-amber-600' : 'text-blue-600';
+      Icon = type === 'in' ? IconPlusCircle : type === 'fee' ? IconMinusCircle : IconCheckCircle;
   }
 
   return (

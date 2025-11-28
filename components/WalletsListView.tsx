@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Wallet } from '../types';
 import { IconRefresh, IconSearch, IconArrowRight } from './Icons';
-import { wallets } from '../mockData';
 
 interface Props {
-  onWalletClick?: (id: string) => void;
+  onWalletClick: (id: string) => void;
 }
 
 const WalletRow: React.FC<{ wallet: Wallet; onClick: () => void }> = ({ wallet, onClick }) => {
@@ -79,23 +77,28 @@ const LiquidityOverview = ({ total, internal, external, currency }: { total: num
 };
 
 const WalletsListView: React.FC<Props> = ({ onWalletClick }) => {
-  const navigate = useNavigate();
   const [filterType, setFilterType] = useState('All');
   
-  // Use shared mock data
+  const wallets: Wallet[] = [
+    { id: '1', name: 'General OVA', accountNumber: 'GEN-OVA-001', provider: 'VeryPay', balance: { currency: 'UGX', amount: -347635687 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '2', name: 'Pre-funded OVA', accountNumber: 'PRE-OVA-002', provider: 'VeryPay', balance: { currency: 'UGX', amount: -3999161 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '3', name: 'Invoice OVA (MTN)', accountNumber: 'INV-MTN-001', provider: 'MTN', balance: { currency: 'UGX', amount: -11300 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '4', name: 'Invoice OVA (Airtel)', accountNumber: 'INV-AIR-002', provider: 'Airtel', balance: { currency: 'UGX', amount: -27639 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '5', name: 'Airtel OVA', accountNumber: 'AIR-OVA-001', provider: 'Airtel', balance: { currency: 'UGX', amount: 5458895 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '6', name: 'YO OVA (Airtel)', accountNumber: 'YO-AIR-001', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 13500 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '7', name: 'YO OVA (MTN)', accountNumber: 'YO-MTN-002', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 15763 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '8', name: 'YO OVA (Warid)', accountNumber: 'YO-WAR-003', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 116607794 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '9', name: 'Fee Distribution', accountNumber: 'FEE-DIST-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 286939 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
+    { id: '10', name: 'Fee Earning', accountNumber: 'FEE-EARN-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 594628 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
+    { id: '11', name: 'Airtel Fee Earning', accountNumber: 'FEE-AIR-01', provider: 'Airtel', balance: { currency: 'UGX', amount: 132798 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
+    { id: '12', name: 'YO Fee Earning', accountNumber: 'FEE-YO-01', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 112340 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
+  ];
+
   const filteredWallets = filterType === 'All' ? wallets : wallets.filter(w => w.type === filterType || (filterType === 'External' && w.provider !== 'VeryPay'));
 
   const internalTotal = wallets.filter(w => w.type === 'Internal' || w.type === 'Fee').reduce((sum, w) => sum + w.balance.amount, 0);
   const externalTotal = wallets.filter(w => w.type === 'External').reduce((sum, w) => sum + w.balance.amount, 0);
   const totalLiquidity = internalTotal + externalTotal;
-
-  const handleWalletClick = (id: string) => {
-    if (onWalletClick) {
-        onWalletClick(id);
-    } else {
-      navigate(`/accounting/wallets/details/${id}`);
-    }
-  };
 
   return (
     <div className="p-6 h-full overflow-y-auto font-sans bg-slate-50/50">
@@ -145,7 +148,7 @@ const WalletsListView: React.FC<Props> = ({ onWalletClick }) => {
             </thead>
             <tbody className="divide-y divide-slate-100">
                {filteredWallets.map(wallet => (
-                  <WalletRow key={wallet.id} wallet={wallet} onClick={() => handleWalletClick(wallet.id)} />
+                  <WalletRow key={wallet.id} wallet={wallet} onClick={() => onWalletClick(wallet.id)} />
                ))}
             </tbody>
           </table>
