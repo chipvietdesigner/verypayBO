@@ -8,6 +8,7 @@ import GlobalOverview from './components/GlobalOverview';
 import WalletsListView from './components/WalletsListView';
 import WalletDetailView from './components/WalletDetailView';
 import DiscrepanciesView from './components/DiscrepanciesView';
+import IssueInvoiceFlow from './components/IssueInvoiceFlow';
 import { TransactionStatus, TransactionData, TransactionType, TransactionListItem } from './types';
 
 // Helper to generate detail data based on selected row info
@@ -139,7 +140,7 @@ const getMockDetailData = (item: TransactionListItem): TransactionData => {
   return { ...baseData, ledger: ledgerEntries as any };
 };
 
-type ViewState = 'transactions' | 'transaction-detail' | 'overview' | 'accounting-wallets' | 'accounting-wallet-detail' | 'accounting-discrepancies';
+type ViewState = 'transactions' | 'transaction-detail' | 'overview' | 'accounting-wallets' | 'accounting-wallet-detail' | 'accounting-discrepancies' | 'issue-invoice';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('transactions');
@@ -181,6 +182,8 @@ const App: React.FC = () => {
         return <WalletDetailView walletId={selectedWalletId || '1'} onBack={() => setCurrentView('accounting-wallets')} />;
       case 'accounting-discrepancies':
         return <DiscrepanciesView />;
+      case 'issue-invoice':
+        return <IssueInvoiceFlow onCancel={() => setCurrentView('transactions')} />;
       default:
         return <TransactionListView onRowClick={handleRowClick} />;
     }

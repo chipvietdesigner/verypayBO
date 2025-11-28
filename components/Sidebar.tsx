@@ -4,7 +4,8 @@ import {
   IconDashboard, IconSettings, IconTenants, IconUsers, IconProcedure, IconAudit, IconChangeRequest,
   IconHome, IconSchool, IconAttendance, IconStudent, IconMerchant, IconTransaction, IconDocument,
   IconToken, IconPosDevice, IconDevice, IconInvoice, IconAccounting, IconLimits, IconRevenue,
-  IconReport, IconNotification, IconAdmin, IconChevronDown, IconChevronRight, IconWallet, IconAlertTriangle
+  IconReport, IconNotification, IconAdmin, IconChevronDown, IconChevronRight, IconWallet, IconAlertTriangle,
+  IconFilePlus
 } from './Icons';
 
 interface NavItemProps {
@@ -94,6 +95,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactions' }) => {
   const [studentsExpanded, setStudentsExpanded] = useState(false);
   const [accountingExpanded, setAccountingExpanded] = useState(false);
+  const [invoicesExpanded, setInvoicesExpanded] = useState(false);
   
   // State for group expansion
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
@@ -117,6 +119,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactio
   useEffect(() => {
      if (currentView?.includes('accounting')) {
          setAccountingExpanded(true);
+     }
+     if (currentView?.includes('invoice')) {
+         setInvoicesExpanded(true);
      }
   }, [currentView]);
 
@@ -202,7 +207,23 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactio
               isActive={currentView === 'transactions'} 
               onClick={() => onNavigate && onNavigate('transactions')}
             />
-            <NavItem icon={<IconInvoice className={iconClass} />} label="Invoices" hasSubmenu />
+            <NavItem 
+               icon={<IconInvoice className={iconClass} />} 
+               label="Invoices" 
+               hasSubmenu
+               isExpanded={invoicesExpanded}
+               onClick={() => setInvoicesExpanded(!invoicesExpanded)}
+            >
+               <SubNavItem 
+                  icon={<IconFilePlus className="w-3.5 h-3.5" />}
+                  label="Issue invoice" 
+                  isActive={currentView === 'issue-invoice'}
+                  onClick={() => onNavigate && onNavigate('issue-invoice')} 
+               />
+               <SubNavItem label="Invoice Issuance" onClick={() => {}} />
+               <SubNavItem label="Invoices List" onClick={() => {}} />
+            </NavItem>
+            
             <NavItem icon={<IconReport className={iconClass} />} label="Reports" hasSubmenu />
             
             <NavItem 

@@ -51,7 +51,13 @@ import {
   BarChart3,
   TrendingDown,
   Printer,
-  XCircle
+  XCircle,
+  FilePlus,
+  UserPlus,
+  CalendarClock,
+  Percent,
+  Trash2,
+  Edit
 } from 'lucide-react';
 
 interface IconProps {
@@ -126,3 +132,11 @@ export const IconXCircle = ({ className }: IconProps) => <XCircle className={cla
 export const IconFilter = ({ className }: IconProps) => <Filter className={className || "w-4 h-4"} />;
 export const IconSearch = ({ className }: IconProps) => <Search className={className || "w-4 h-4"} />;
 export const IconCalendar = ({ className }: IconProps) => <Calendar className={className || "w-4 h-4"} />;
+
+// New icons for Invoice Flow
+export const IconFilePlus = ({ className }: IconProps) => <FilePlus className={className || "w-5 h-5"} />;
+export const IconUserPlus = ({ className }: IconProps) => <UserPlus className={className || "w-4 h-4"} />;
+export const IconCalendarClock = ({ className }: IconProps) => <CalendarClock className={className || "w-4 h-4"} />;
+export const IconPercent = ({ className }: IconProps) => <Percent className={className || "w-4 h-4"} />;
+export const IconTrash = ({ className }: IconProps) => <Trash2 className={className || "w-4 h-4"} />;
+export const IconEdit = ({ className }: IconProps) => <Edit className={className || "w-4 h-4"} />;
