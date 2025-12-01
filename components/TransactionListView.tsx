@@ -1,87 +1,79 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
-import TransactionFilters, { FilterState } from './TransactionFilters';
+import React, { useState, useMemo } from 'react';
+// import { useNavigate } from 'react-router-dom';
+import TransactionFilters, { FilterState, DEFAULT_FILTERS } from './TransactionFilters';
 import TransactionListTable from './TransactionListTable';
 import Pagination from './Pagination';
-import { TransactionListItem, TransactionStatus, TransactionType } from '../types';
+import { TransactionListItem } from '../types';
 import { IconDownload, IconRefresh } from './Icons';
+import { initialTransactions } from '../mockData';
 
 interface Props {
-  onRowClick: (item: TransactionListItem) => void;
+  onRowClick?: (item: TransactionListItem) => void;
 }
 
-// Helper to generate mock items
-const generateMockTransactions = (count: number): TransactionListItem[] => {
-  const types: TransactionType[] = ['Funds in', 'Wallet Top Up', 'Withdrawal', 'Payment', 'Deactivation Transfer'];
-  
-  // Weighted statuses: More Approved than others. REMOVED PENDING.
-  const statuses = [
-      TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, 
-      TransactionStatus.APPROVED, TransactionStatus.APPROVED, TransactionStatus.APPROVED, 
-      // TransactionStatus.PENDING, // Removed
-      TransactionStatus.FAILED, 
-      TransactionStatus.DECLINED
-  ];
-  
-  const methods = ['External transfer', 'Physical card', 'QR code', 'Transfer', 'Mobile Money'];
-  const amounts = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 150000, 200000, 500000, 1000000];
-
-  return Array.from({ length: count }).map((_, index) => {
-    const id = (index + 1).toString();
-    const type = types[Math.floor(Math.random() * types.length)];
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const method = methods[Math.floor(Math.random() * methods.length)];
-    const baseAmount = amounts[Math.floor(Math.random() * amounts.length)];
-    
-    let message = 'Success';
-    if (status === TransactionStatus.FAILED) message = 'Insufficient funds';
-    else if (status === TransactionStatus.DECLINED) message = 'Risk threshold exceeded';
-
-    return {
-      id,
-      reference: `REF-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
-      date: `24/11/25 ${String(Math.floor(Math.random() * 23)).padStart(2, '0')}:${String(Math.floor(Math.random() * 59)).padStart(2, '0')}`,
-      requestAmount: { currency: 'UGX', amount: baseAmount },
-      type,
-      payerWalletId: `221${Math.floor(Math.random() * 1000000000)}`,
-      payeeWalletId: `251${Math.floor(Math.random() * 1000000000)}`,
-      status,
-      message,
-      school: '--',
-      paymentMethod: method,
-      serialNumber: Math.random() > 0.7 ? `SN-${Math.floor(Math.random() * 10000)}` : '--'
-    };
-  });
-};
-
-const initialData = generateMockTransactions(150); // Generate a stable large set once
-
 const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
+ //// const navigate = useNavigate();
   const [itemsPerPage, setItemsPerPage] = useState(50);
-  const [activeFilters, setActiveFilters] = useState<FilterState | null>(null);
+  
+  // State for data filtering and loading
+  const [activeFilters, setActiveFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Client-side filtering logic
+  // Check if current filters differ from default
+  const isFilterActive = useMemo(() => {
+      return JSON.stringify(activeFilters) !== JSON.stringify(DEFAULT_FILTERS);
+  }, [activeFilters]);
+
+  const handleRowClick = (item: TransactionListItem) => {
+      if (onRowClick) {
+        onRowClick(item);
+      } else {
+       // navigate(`/transactions/details/${item.reference}`);
+      }
+  };
+
+  // Client-side filtering logic based on activeFilters
   const filteredData = useMemo(() => {
-    if (!activeFilters) return initialData;
-
-    return initialData.filter(item => {
-        if (activeFilters.type && activeFilters.type.length > 0) {
+    // Note: In a real app, this would likely be a backend query.
+    // Here we filter 'initialTransactions' based on 'activeFilters'.
+    
+    // If loading, we might want to show previous data or empty, but the table handles the loading overlay.
+    return initialTransactions.filter(item => {
+        // 1. Search
+        if (activeFilters.search) {
+            const s = activeFilters.search.toLowerCase();
+            if (!item.reference.toLowerCase().includes(s) && !item.payerWalletId.includes(s)) {
+                return false;
+            }
+        }
+        // 2. Type
+        if (activeFilters.type.length > 0) {
             if (!activeFilters.type.includes(item.type)) return false;
         }
-        if (activeFilters.status && activeFilters.status.length > 0) {
+        // 3. Status
+        if (activeFilters.status.length > 0) {
              const itemStatusNormal = item.status.charAt(0) + item.status.slice(1).toLowerCase();
              if (!activeFilters.status.includes(itemStatusNormal)) return false;
         }
+        // 4. More Filters - School
+        if (activeFilters.more.school !== 'All Schools') {
+             // Mock logic: assumes we had school data on item, strictly checking generic property here for demo
+             if (item.school !== activeFilters.more.school && item.school !== '--') return false; 
+        }
+        // 5. More Filters - Payment Method
+        if (activeFilters.more.method !== 'All Methods') {
+             if (item.paymentMethod !== activeFilters.more.method) return false;
+        }
+        
         return true;
     });
-  }, [activeFilters]);
+  }, [activeFilters]); // Only re-calculate when activeFilters changes (which happens after Apply click)
   
-  // Pagination slice
   const currentData = useMemo(() => {
       return filteredData.slice(0, itemsPerPage);
   }, [filteredData, itemsPerPage]);
 
-  // Calculate totals
   const totals = useMemo(() => {
     return currentData.reduce((acc, curr) => {
       return {
@@ -91,18 +83,36 @@ const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
     }, { amount: 0, currency: 'UGX' });
   }, [currentData]);
 
-  const handleApplyFilter = (filters: FilterState) => {
-      setActiveFilters(filters);
+  // --- Handler Logic ---
+
+  const handleApplyFilter = (newFilters: FilterState) => {
+      setIsLoading(true);
+      
+      // Simulate network request duration (1 - 1.5s)
+      setTimeout(() => {
+          setActiveFilters(newFilters);
+          setIsLoading(false);
+      }, 1200);
+  };
+
+  const handleClearFilter = () => {
+      setIsLoading(true);
+
+      // Simulate shorter reset duration (0.5 - 1s)
+      setTimeout(() => {
+          setActiveFilters(DEFAULT_FILTERS);
+          setIsLoading(false);
+      }, 800);
   };
 
   const handleRefresh = () => {
-      setActiveFilters(null);
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 1000);
   };
 
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col bg-white font-sans">
       
-      {/* 1. Page Header */}
       <div className="px-4 py-3 border-b border-slate-200 flex-shrink-0 bg-white">
         <div className="flex items-center justify-between">
            <div>
@@ -111,9 +121,10 @@ const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
         </div>
       </div>
 
-      {/* 2. Filters Toolbar */}
       <TransactionFilters 
         onApply={handleApplyFilter}
+        onClear={handleClearFilter}
+        isFilterActive={isFilterActive}
         actions={
           <>
             <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-sm">
@@ -123,24 +134,23 @@ const TransactionListView: React.FC<Props> = ({ onRowClick }) => {
                 onClick={handleRefresh}
                 className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-sm"
             >
-              <IconRefresh className="w-3.5 h-3.5" /> Refresh data
+              <IconRefresh className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} /> Refresh data
             </button>
           </>
         }
       />
 
-      {/* 3. Table Area */}
       <div className="flex-1 overflow-hidden bg-white relative">
           <div className="absolute inset-0 overflow-auto">
              <TransactionListTable 
                 transactions={currentData} 
-                onRowClick={onRowClick} 
+                onRowClick={handleRowClick} 
                 totals={totals}
+                isLoading={isLoading}
              />
           </div>
       </div>
 
-      {/* 4. Pagination */}
       <div className="flex-shrink-0 z-10">
           <Pagination 
             itemsPerPage={itemsPerPage} 
