@@ -1,16 +1,10 @@
 
 import React, { useState } from 'react';
-import { PartyDetails, MoneyValue, TransactionStatus } from '../types';
+import { PartyDetails, MoneyValue, TransactionStatus, TransactionData } from '../types';
 import { IconWallet, IconBuilding, IconChevronDown, IconCheckCircle, IconArrowRight, IconMinusCircle, IconPlusCircle, IconXCircle } from './Icons';
 
 interface Props {
-  payer: PartyDetails;
-  payee: PartyDetails;
-  grossAmount: MoneyValue;
-  fee: MoneyValue;
-  netAmount: MoneyValue;
-  transactionType?: string;
-  status?: TransactionStatus;
+  transactionData: TransactionData;
 }
 
 const formatMoney = (mv: MoneyValue) => {
@@ -22,27 +16,28 @@ const FlowStep = ({
   amount, 
   type, 
   details,
-  isFailed
+  isFailed,
+  icon: CustomIcon
 }: { 
   title: string; 
   amount: string; 
-  type: 'in' | 'out' | 'fee';
+  type: 'in' | 'out' | 'fee' | 'transfer';
   details?: React.ReactNode;
   isFailed?: boolean;
+  icon?: React.ElementType;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
-  // Neutral logic: White background, slate border. Colors reserved for icons/text if needed.
+  // Neutral logic: White background, slate border.
   let bgClass = 'bg-white border-slate-200 hover:border-slate-300';
   let iconColor = 'text-slate-400'; 
-  let Icon = IconCheckCircle;
+  let Icon = CustomIcon || IconCheckCircle;
 
   if (isFailed) {
       bgClass = 'bg-white border-red-200 hover:border-red-300 ring-1 ring-red-50';
       iconColor = 'text-red-600';
       Icon = IconXCircle;
   } else {
-      // Use subtle colors for icons only to distinguish types, but keep containers neutral
       iconColor = type === 'in' ? 'text-emerald-600' : type === 'fee' ? 'text-amber-600' : 'text-blue-600';
       Icon = type === 'in' ? IconPlusCircle : type === 'fee' ? IconMinusCircle : IconCheckCircle;
   }
@@ -52,7 +47,7 @@ const FlowStep = ({
       {/* Connector Line */}
       <div className="absolute left-1/2 -top-4 w-px h-4 bg-slate-300 -z-10 last:hidden"></div>
 
-      <div className="flex justify-between items-start cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+      <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <Icon className={`w-5 h-5 ${iconColor}`} />
           <div>
@@ -66,19 +61,25 @@ const FlowStep = ({
           <div className={`text-sm font-bold ${isFailed ? 'text-red-600 line-through decoration-red-400' : (type === 'fee' ? 'text-red-600' : 'text-slate-900')}`}>
             {type === 'fee' ? '-' : ''}{amount}
           </div>
-          {details && (
-             <button className="text-[10px] text-slate-500 flex items-center justify-end gap-1 w-full mt-1 hover:text-slate-700 font-medium">
-                Details <IconChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-             </button>
-          )}
         </div>
       </div>
 
-      {/* Expandable Details */}
-      {isExpanded && details && (
-        <div className="mt-3 pt-3 border-t border-slate-100 text-xs">
-          {details}
-        </div>
+      {/* Details Toggle */}
+      {details && (
+          <div className="mt-2">
+             {isExpanded && (
+                <div className="pt-2 border-t border-slate-100 text-xs mb-2 animate-in slide-in-from-top-1">
+                   {details}
+                </div>
+             )}
+             <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-full flex items-center justify-center gap-1 text-[10px] text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 py-1 rounded transition-colors font-medium uppercase tracking-wide"
+             >
+                {isExpanded ? 'Show less' : 'Details'}
+                <IconChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+             </button>
+          </div>
       )}
     </div>
   );
@@ -87,12 +88,16 @@ const FlowStep = ({
 const PartyCard = ({ 
   label, 
   walletId, 
-  amount, 
+  amount,        
+  fee,           
+  total,
   isSource 
 }: { 
   label: string; 
   walletId: string; 
-  amount: string; 
+  amount: MoneyValue; 
+  fee: MoneyValue;
+  total: MoneyValue;
   isSource: boolean;
 }) => (
   <div className={`flex flex-col h-full rounded-xl border border-slate-200 bg-white p-5 relative overflow-hidden shadow-sm`}>
@@ -103,30 +108,66 @@ const PartyCard = ({
         <h3 className="text-xs font-bold text-slate-600 mb-1">{label}</h3>
         <div className="flex items-center gap-1.5 text-slate-700 bg-slate-50 border border-slate-100 px-2 py-1 rounded">
           <IconWallet className="w-3.5 h-3.5 text-slate-400" />
-          <span className="   text-xs font-medium">{walletId}</span>
+          <span className="text-xs font-medium">{walletId}</span>
         </div>
-      </div>
-      <div className={`p-2 rounded-full bg-slate-50 text-slate-500`}>
-        <IconBuilding className="w-5 h-5" />
       </div>
     </div>
 
-    <div className="mt-auto">
-      <div className="flex justify-between items-end border-t border-slate-100 pt-3">
-        <span className="text-xs text-slate-600 font-semibold">{isSource ? 'Total Debited' : 'Total Credited'}</span>
-        <span className={`text-xl font-bold    ${isSource ? 'text-indigo-700' : 'text-emerald-700'}`}>
-          {amount}
-        </span>
+    <div className="mt-auto space-y-2 border-t border-slate-100 pt-3">
+       {/* Amount Line */}
+       <div className="flex justify-between items-center text-xs">
+          <span className="text-slate-500">Amount</span>
+          <span className="font-medium text-slate-900">{formatMoney(amount)}</span>
+       </div>
+       {/* Fee Line */}
+       <div className="flex justify-between items-center text-xs">
+          <span className="text-slate-500">Fee</span>
+          <span className="font-medium text-slate-900">{formatMoney(fee)}</span>
+       </div>
+       {/* Total Line */}
+       <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+         <span className="text-xs text-slate-600 font-bold uppercase">
+            Total {isSource ? 'Debited' : 'Credited'}
+         </span>
+         <span className={`text-lg font-bold ${isSource ? 'text-indigo-700' : 'text-emerald-700'}`}>
+           {formatMoney(total)}
+         </span>
       </div>
     </div>
   </div>
 );
 
-const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, netAmount, transactionType, status }) => {
+const DetailRow = ({ label, value }: { label: string, value: React.ReactNode }) => (
+    <div className="flex justify-between py-1 border-b border-slate-50 last:border-0">
+        <span className="text-slate-500">{label}:</span>
+        <span className="font-medium text-slate-800 text-right max-w-[180px] truncate">{value}</span>
+    </div>
+);
+
+const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
   
-  // Use simplified 2-step flow for Payments, Withdrawals, and Merchant Payments
-  const isSimpleFlow = ['Payment', 'Withdrawal', 'Merchant Payment'].includes(transactionType || '');
+  const { type, status, payer, payee, grossAmount, amount: netAmount, providerReference, reference, creationDate, completedDate, message, paymentMethod } = transactionData;
   const isFailed = status === TransactionStatus.FAILED;
+
+  // Logic to determine Flow Layout
+  const isPaymentLike = ['Payment', 'Withdrawal', 'Pre-funded', 'Deactivation Transfer', 'Merchant Payment'].includes(type);
+  const isFundsIn = type === 'Funds in';
+  const isWalletTopUp = type === 'Wallet Top Up';
+  const isFundsOut = type === 'Funds out';
+
+  // Common Details Block
+  const getCommonDetails = (provider: string) => (
+      <div className="space-y-1">
+         <DetailRow label="Provider" value={provider} />
+         <DetailRow label="Provider Ref" value={providerReference || '--'} />
+         <DetailRow label="From" value={payer.walletId} />
+         <DetailRow label="To" value={payee.walletId} />
+         <DetailRow label="Created" value={creationDate} />
+         <DetailRow label="Completed" value={completedDate || '--'} />
+         <DetailRow label="Ref ID" value={reference} />
+         <DetailRow label="Message" value={message} />
+      </div>
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
@@ -135,7 +176,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
           Funds flow
         </h3>
         <div className="text-xs text-slate-500 font-medium">
-          Ref: <span className="   text-slate-700">Ledger</span>
+          Ref: <span className="text-slate-700">Ledger</span>
         </div>
       </div>
 
@@ -147,122 +188,110 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
             <PartyCard 
               label="Source (Payer)" 
               walletId={payer.walletId} 
-              amount={formatMoney(grossAmount)} 
+              amount={payer.amount}
+              fee={payer.fee}
+              total={payer.total}
               isSource={true} 
             />
           </div>
 
-          {/* Center: Processing Engine (The Bridge) */}
+          {/* Center: Processing Engine */}
           <div className="lg:col-span-6 flex flex-col justify-center relative">
-            {/* Visual Arrow Background */}
             <div className="absolute top-1/2 left-0 w-full h-px border-t border-dashed border-slate-200 -z-10 hidden lg:block"></div>
             <div className="absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 hidden lg:block text-slate-300">
                <IconArrowRight className="w-6 h-6" />
             </div>
 
-            <div className="space-y-4 p-2">
+            <div className="space-y-4 p-2 relative z-10">
               
-              {/* CONDITIONAL FLOW RENDERING */}
-              {isSimpleFlow ? (
-                  // Simplified 2-Step Flow for Payments/Withdrawals
+              {/* 1. PAYMENT / WITHDRAWAL FLOW (2 Steps) */}
+              {isPaymentLike && (
                   <>
                      <FlowStep 
-                        title="1. Request" 
-                        amount={formatMoney(grossAmount)} 
+                        title={`Request amount: ${formatMoney(payer.amount)}`}
+                        amount=""
                         type="in"
-                        details={
-                          <div className="space-y-2">
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Method:</span>
-                                <span className="font-medium text-slate-800">
-                                    {transactionType === 'Withdrawal' ? 'Withdrawal Request' : 'External Transfer'}
-                                </span>
-                             </div>
-                          </div>
-                        }
                       />
-                      
                       <FlowStep 
-                        title="2. Transfer" 
-                        amount={formatMoney(netAmount)} 
+                        title={`Transfer ${formatMoney(netAmount)}`}
+                        amount={formatMoney(netAmount)}
                         type="out"
-                        isFailed={isFailed} // If failed, usually fails at transfer
-                        details={
-                          <div className="space-y-2">
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Provider:</span>
-                                <span className="font-medium text-slate-800">VeryPay Internal</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">To Account:</span>
-                                <span className="text-slate-600">{payee.walletId}</span>
-                             </div>
-                          </div>
-                        }
+                        isFailed={isFailed}
+                        details={getCommonDetails('VeryPay Internal')}
                       />
                   </>
-              ) : (
-                  // Standard 3-Step Flow for other transactions
+              )}
+
+              {/* 2. WALLET TOP UP / FUNDS IN (3 Steps: Collect -> Fee -> Disburse) */}
+              {(isWalletTopUp || isFundsIn) && (
                   <>
-                      {/* Step 1: Collection */}
                       <FlowStep 
                         title="1. Collection" 
                         amount={formatMoney(grossAmount)} 
                         type="in"
-                        isFailed={isFailed} // If failed, usually fails at collection for Funds In
+                        isFailed={isFailed}
                         details={
-                          <div className="space-y-2">
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Provider:</span>
-                                <span className="font-medium text-slate-800">Yo! Payments</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Method:</span>
-                                <span className="font-medium text-slate-800">Mobile Money (External)</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Intermediate Acc:</span>
-                                <span className="   text-slate-600">VeryPay OVA</span>
-                             </div>
-                          </div>
+                           <div className="space-y-1">
+                             <DetailRow label="Provider" value="Yo! Payments" />
+                             <DetailRow label="Method" value="Mobile Money" />
+                             <DetailRow label="Intermediate" value="VeryPay OVA" />
+                             <DetailRow label="Ref" value={providerReference} />
+                           </div>
                         }
                       />
-
-                      {/* Step 2: Fees */}
                       <FlowStep 
                         title="2. Fee Deduction" 
-                        amount={formatMoney(fee)} 
+                        amount={formatMoney(payer.fee)} 
                         type="fee"
                         details={
-                           <div className="space-y-2">
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Processing Fee:</span>
-                                <span className="   text-red-600">{formatMoney(fee)}</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Recipient:</span>
-                                <span className="   text-slate-600">25611000000002</span>
-                             </div>
-                          </div>
+                           <div className="space-y-1">
+                             <DetailRow label="Fee Account" value="25611000002" />
+                             <DetailRow label="Type" value="Processing Fee" />
+                           </div>
                         }
                       />
-
-                      {/* Step 3: Disbursement */}
                       <FlowStep 
                         title="3. Disbursement" 
                         amount={formatMoney(netAmount)} 
                         type="out"
                         details={
-                          <div className="space-y-2">
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">Provider:</span>
-                                <span className="font-medium text-slate-800">VeryPay Internal</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-slate-500">From Account:</span>
-                                <span className="   text-slate-600">VeryPay OVA</span>
-                             </div>
+                          <div className="space-y-1">
+                             <DetailRow label="From" value="VeryPay OVA" />
+                             <DetailRow label="To" value={payee.walletId} />
                           </div>
+                        }
+                      />
+                  </>
+              )}
+
+              {/* 3. FUNDS OUT (3 Steps: Collect -> Disburse -> Fee) */}
+              {isFundsOut && (
+                  <>
+                      <FlowStep 
+                        title="1. Collection" 
+                        amount={formatMoney(grossAmount)} 
+                        type="in"
+                        details={
+                           <div className="space-y-1">
+                             <DetailRow label="Source" value="Internal Account" />
+                           </div>
+                        }
+                      />
+                      <FlowStep 
+                        title="2. Disbursement" 
+                        amount={formatMoney(netAmount)} 
+                        type="out"
+                        isFailed={isFailed}
+                        details={getCommonDetails(paymentMethod)}
+                      />
+                       <FlowStep 
+                        title="3. Fee Deduction" 
+                        amount={formatMoney(payer.fee)} 
+                        type="fee"
+                        details={
+                           <div className="space-y-1">
+                             <DetailRow label="Fee Account" value="Fee Wallet" />
+                           </div>
                         }
                       />
                   </>
@@ -276,7 +305,9 @@ const FundsFlowVisualizer: React.FC<Props> = ({ payer, payee, grossAmount, fee, 
              <PartyCard 
               label="Destination (Payee)" 
               walletId={payee.walletId} 
-              amount={formatMoney(netAmount)} 
+              amount={payee.amount}
+              fee={payee.fee}
+              total={payee.total}
               isSource={false} 
             />
           </div>

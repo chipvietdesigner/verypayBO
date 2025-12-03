@@ -56,13 +56,14 @@ export interface LedgerEntry {
 
 export interface TransactionData {
   reference: string;
+  providerReference?: string; // New field
   creationDate: string;
-  completedDate?: string; // New: For approved txs
-  expiryTime?: string;    // Existing: For pending txs
+  completedDate?: string;
+  expiryTime?: string;
   location: string;
-  requestAmount: MoneyValue; // New: Original user input
+  requestAmount: MoneyValue;
   grossAmount: MoneyValue;
-  amount: MoneyValue; // Net Amount
+  amount: MoneyValue;
   posId: string;
   tokenId?: string;
   paymentMethod: string;
@@ -123,4 +124,26 @@ export interface WalletLedgerItem {
   credit?: MoneyValue;
   balance: MoneyValue;
   status: 'Reconciled' | 'Pending' | 'Uncleared';
+}
+
+export interface InvoiceListItem {
+  id: string;
+  issuer: string;
+  name: string;
+  invoiceType: 'Subscription' | 'Services or products';
+  status: 'Generated' | 'Scheduled' | 'Failed' | 'Cancelled';
+  recipientType: string;
+  issueType: 'Immediate' | 'Scheduled';
+  creationDate: string;
+  paymentTerms: string;
+  amount: MoneyValue;
+}
+
+export interface EodWorkflow {
+  id: string;
+  title: string;
+  description: string;
+  lastRun: string;
+  nextRun: string;
+  status: 'Active' | 'Inactive';
 }

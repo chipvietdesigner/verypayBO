@@ -92,14 +92,12 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
          <InfoItem 
             label="POS ID" 
             value={data.posId} 
-            isMono 
             isCopyable
             icon={<IconPOS className="w-3 h-3" />}
          />
          <InfoItem 
             label="Token ID" 
             value={data.tokenId || '--'} 
-            isMono
             icon={<IconToken className="w-3 h-3" />}
          />
       </div>
@@ -109,18 +107,15 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
          <InfoItem 
             label="Requested amount" 
             value={`${data.requestAmount.currency} ${data.requestAmount.amount.toLocaleString()}`} 
-            isMono
             className="bg-blue-50/20"
          />
          <InfoItem 
             label="Gross amount" 
             value={`${data.grossAmount.currency} ${data.grossAmount.amount.toLocaleString()}`} 
-            isMono
          />
          <InfoItem 
             label="Net amount" 
             value={`${data.amount.currency} ${data.amount.amount.toLocaleString()}`} 
-            isMono
             className="bg-emerald-50/20"
          />
 
@@ -145,8 +140,8 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
                     Remark
                 </span>
             </div>
-            <div className="bg-white border border-slate-200 rounded p-2.5 font-mono text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
-                {data.remark || <span className="text-slate-400 italic font-normal font-mono">No remark provided</span>}
+            <div className="bg-white border border-slate-200 rounded p-2.5 text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
+                {data.remark || <span className="text-slate-400 italic font-normal">No remark provided</span>}
             </div>
          </div>
 
@@ -157,7 +152,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
                     Message
                 </span>
             </div>
-            <div className="bg-white border border-slate-200 rounded p-2.5 font-mono text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
+            <div className="bg-white border border-slate-200 rounded p-2.5 text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
                 {data.message || 'No system message available.'}
             </div>
          </div>

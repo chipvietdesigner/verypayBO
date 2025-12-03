@@ -50,16 +50,8 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
         {/* Compact Info Grid */}
         <TransactionInfo data={data} />
            
-        {/* Visualizer */}
-        <FundsFlowVisualizer 
-          payer={data.payer}
-          payee={data.payee}
-          grossAmount={data.grossAmount}
-          fee={{ currency: 'UGX', amount: 10 }} 
-          netAmount={data.amount}
-          transactionType={data.type}
-          status={data.status}
-        />
+        {/* Visualizer - Updated to take full data object */}
+        <FundsFlowVisualizer transactionData={data} />
 
         {/* Ledger */}
         <div className="pb-6">

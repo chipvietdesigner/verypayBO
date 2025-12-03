@@ -75,16 +75,16 @@ const getWalletDataByRange = (walletId: string, range: string) => {
 
   switch (walletId) {
     case '1':
-        walletInfo = { id: '1', name: 'General OVA', accountNumber: 'GEN-OVA-001', provider: 'VeryPay', balance: { currency: 'UGX', amount: -347635687 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
+        walletInfo = { id: '1', name: 'General OVA', accountNumber: 'GEN-OVA-001', provider: 'VeryPay', balance: { currency: 'UGX', amount: -(347635687) }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '2':
         walletInfo = { id: '2', name: 'Pre-funded OVA', accountNumber: 'PRE-OVA-002', provider: 'VeryPay', balance: { currency: 'UGX', amount: -3999161 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '3':
-        walletInfo = { id: '3', name: 'Invoice OVA (MTN)', accountNumber: 'INV-MTN-001', provider: 'MTN', balance: { currency: 'UGX', amount: -11300 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' };
+        walletInfo = { id: '3', name: 'Invoice OVA (MTN)', accountNumber: 'INV-MTN-001', provider: 'MTN', balance: { currency: 'UGX', amount: -11300 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '4':
-        walletInfo = { id: '4', name: 'Invoice OVA (Airtel)', accountNumber: 'INV-AIR-002', provider: 'Airtel', balance: { currency: 'UGX', amount: -27639 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' };
+        walletInfo = { id: '4', name: 'Invoice OVA (Airtel)', accountNumber: 'INV-AIR-002', provider: 'Airtel', balance: { currency: 'UGX', amount: -27639 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '5':
         walletInfo = { id: '5', name: 'Airtel OVA', accountNumber: 'AIR-OVA-001', provider: 'Airtel', balance: { currency: 'UGX', amount: 5458895 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' };
@@ -99,16 +99,16 @@ const getWalletDataByRange = (walletId: string, range: string) => {
         walletInfo = { id: '8', name: 'YO OVA (Warid)', accountNumber: 'YO-WAR-003', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 116607794 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' };
         break;
     case '9':
-        walletInfo = { id: '9', name: 'Fee Distribution', accountNumber: 'FEE-DIST-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 286939 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' };
+        walletInfo = { id: '9', name: 'Fee Collection', accountNumber: 'FEE-DIST-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 286939 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '10':
-        walletInfo = { id: '10', name: 'Fee Earning', accountNumber: 'FEE-EARN-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 594628 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' };
+        walletInfo = { id: '10', name: 'Fee Earning', accountNumber: 'FEE-EARN-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 594628 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '11':
-        walletInfo = { id: '11', name: 'Airtel Fee Earning', accountNumber: 'FEE-AIR-01', provider: 'Airtel', balance: { currency: 'UGX', amount: 132798 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' };
+        walletInfo = { id: '11', name: 'Airtel Fee Earning', accountNumber: 'FEE-AIR-01', provider: 'Airtel', balance: { currency: 'UGX', amount: 132798 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     case '12':
-        walletInfo = { id: '12', name: 'YO Fee Earning', accountNumber: 'FEE-YO-01', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 112340 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' };
+        walletInfo = { id: '12', name: 'YO Fee Earning', accountNumber: 'FEE-YO-01', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 112340 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
         break;
     default:
         walletInfo = { id: '1', name: 'General OVA', accountNumber: 'GEN-OVA-001', provider: 'VeryPay', balance: { currency: 'UGX', amount: -347635687 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' };
@@ -126,7 +126,7 @@ const getWalletDataByRange = (walletId: string, range: string) => {
 
   const rawTransactions = [
       // TODAY (0 days ago)
-      { id: 't1', daysAgo: 0, time: '14:30', reference: 'REF-NOW-1', description: 'Merchant Settlement', counterparty: 'Kampala Store', type: 'Settlement', debit: 50000, status: 'Pending' },
+      { id: 't1', daysAgo: 0, time: '14:30', reference: 'REF-NOW-1', description: 'Merchant Settlement', counterparty: 'Kampala Store', type: 'Settlement', debit: 50000, status: 'Reconciled' },
       { id: 't2', daysAgo: 0, time: '11:15', reference: 'REF-NOW-2', description: 'Top Up', counterparty: 'Equity Bank', type: 'Funding', credit: 300000, status: 'Reconciled' },
       { id: 't3', daysAgo: 0, time: '09:00', reference: 'REF-NOW-3', description: 'Opening Check', counterparty: 'System', type: 'Audit', status: 'Reconciled' },
       
@@ -318,12 +318,23 @@ const WalletDetailView: React.FC<Props> = ({ onBack, walletId }) => {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-0 overflow-hidden flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
                 
                 {/* Opening */}
-                <div className="flex-1 p-5 flex flex-col justify-center">
-                    <span className="text-xs font-light text-slate-500 uppercase tracking-wide mb-1">Opening Balance</span>
-                    <span className={`text-lg    font-bold ${metrics.openingBalance.amount < 0 ? 'text-red-600' : 'text-slate-700'}`}>
-                        {metrics.openingBalance.currency} {metrics.openingBalance.amount.toLocaleString()}
-                    </span>
-                </div>
+             <div className="flex-1 p-5 flex flex-col justify-center">
+                <span className="text-xs font-light text-slate-500 uppercase tracking-wide mb-1">
+                  Opening Balance
+                </span>
+
+                <span
+                  className={`text-lg font-bold ${
+                    metrics.openingBalance.amount < 0 ? 'text-red-600' : 'text-slate-700'
+                  }`}
+                >
+                  {metrics.openingBalance.currency}{' '}
+                  {metrics.openingBalance.amount < 0
+                    ? `(${Math.abs(metrics.openingBalance.amount).toLocaleString()})`
+                    : metrics.openingBalance.amount.toLocaleString()
+                  }
+                </span>
+              </div>
 
                 {/* Operator + */}
                 <div className="hidden lg:flex items-center justify-center w-8 bg-white text-slate-300">
@@ -362,10 +373,21 @@ const WalletDetailView: React.FC<Props> = ({ onBack, walletId }) => {
 
                 {/* Closing */}
                 <div className="flex-1 p-5 flex flex-col justify-center bg-slate-50">
-                    <span className="text-xs font-light text-slate-900 uppercase tracking-wide mb-1">Closing Balance</span>
-                    <span className={`text-2xl    font-extrabold ${metrics.closingBalance.amount < 0 ? 'text-red-600' : 'text-slate-900'}`}>
-                        {metrics.closingBalance.currency} {metrics.closingBalance.amount.toLocaleString()}
-                    </span>
+                  <span className="text-xs font-light text-slate-900 uppercase tracking-wide mb-1">
+                    Closing Balance
+                  </span>
+
+                  <span
+                    className={`text-2xl font-extrabold ${
+                      metrics.closingBalance.amount < 0 ? 'text-red-600' : 'text-slate-900'
+                    }`}
+                  >
+                    {metrics.closingBalance.currency}{' '}
+                    {metrics.closingBalance.amount < 0
+                      ? `(${Math.abs(metrics.closingBalance.amount).toLocaleString()})`
+                      : metrics.closingBalance.amount.toLocaleString()
+                    }
+                  </span>
                 </div>
             </div>
         </div>
@@ -447,10 +469,16 @@ const WalletDetailView: React.FC<Props> = ({ onBack, walletId }) => {
                                 </span>
                              ) : <span className="text-slate-300 font-light">-</span>}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-right    text-sm font-bold text-slate-800 bg-slate-50/50 group-hover:bg-white border-l border-transparent group-hover:border-slate-100 transition-colors">
-                             <span className={item.balance.amount < 0 ? 'text-red-600' : 'text-slate-900'}>
-                                {item.balance.amount.toLocaleString()} <span className="text-[10px] text-slate-400 font-normal">{item.balance.currency}</span>
-                             </span>
+                          <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-bold text-slate-800 bg-slate-50/50 group-hover:bg-white border-l border-transparent group-hover:border-slate-100 transition-colors">
+                            <span className={item.balance.amount < 0 ? 'text-red-600' : 'text-slate-900'}>
+                              {item.balance.amount < 0
+                                ? `(${Math.abs(item.balance.amount).toLocaleString()})`
+                                : item.balance.amount.toLocaleString()
+                              }
+                              <span className="text-[10px] text-slate-400 font-normal ml-1">
+                                {item.balance.currency}
+                              </span>
+                            </span>
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-center">
                              {item.status === 'Reconciled' && (

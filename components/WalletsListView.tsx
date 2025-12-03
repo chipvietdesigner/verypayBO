@@ -25,7 +25,7 @@ const WalletRow: React.FC<{ wallet: Wallet; onClick: () => void }> = ({ wallet, 
                <span className="text-xs    text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                  {wallet.accountNumber}
                </span>
-               {isFeeAccount && <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">Fee Account</span>}
+
             </div>
         </div>
       </td>
@@ -36,8 +36,19 @@ const WalletRow: React.FC<{ wallet: Wallet; onClick: () => void }> = ({ wallet, 
         </div>
       </td>
       <td className="px-6 py-4 text-right">
-        <div className={`   font-bold text-base ${isNegative ? 'text-red-600' : 'text-slate-900'}`}>
-          {wallet.balance.amount.toLocaleString()} <span className="text-xs text-slate-500 font-medium">{wallet.balance.currency}</span>
+        <div
+          className={`font-bold text-base ${
+            wallet.balance.amount < 0 ? 'text-red-600' : 'text-slate-900'
+          }`}
+        >
+          {wallet.balance.amount < 0
+            ? `(${Math.abs(wallet.balance.amount).toLocaleString()})`
+            : wallet.balance.amount.toLocaleString()
+          }
+
+          <span className="text-xs text-slate-500 font-medium ml-1">
+            {wallet.balance.currency}
+          </span>
         </div>
       </td>
       <td className="px-6 py-4 text-right">
@@ -82,16 +93,16 @@ const WalletsListView: React.FC<Props> = ({ onWalletClick }) => {
   const wallets: Wallet[] = [
     { id: '1', name: 'General OVA', accountNumber: 'GEN-OVA-001', provider: 'VeryPay', balance: { currency: 'UGX', amount: -347635687 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
     { id: '2', name: 'Pre-funded OVA', accountNumber: 'PRE-OVA-002', provider: 'VeryPay', balance: { currency: 'UGX', amount: -3999161 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
-    { id: '3', name: 'Invoice OVA (MTN)', accountNumber: 'INV-MTN-001', provider: 'MTN', balance: { currency: 'UGX', amount: -11300 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
-    { id: '4', name: 'Invoice OVA (Airtel)', accountNumber: 'INV-AIR-002', provider: 'Airtel', balance: { currency: 'UGX', amount: -27639 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
+    { id: '3', name: 'Invoice OVA (MTN)', accountNumber: 'INV-MTN-001', provider: 'MTN', balance: { currency: 'UGX', amount: -11300 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '4', name: 'Invoice OVA (Airtel)', accountNumber: 'INV-AIR-002', provider: 'Airtel', balance: { currency: 'UGX', amount: -27639 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
     { id: '5', name: 'Airtel OVA', accountNumber: 'AIR-OVA-001', provider: 'Airtel', balance: { currency: 'UGX', amount: 5458895 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
     { id: '6', name: 'YO OVA (Airtel)', accountNumber: 'YO-AIR-001', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 13500 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
     { id: '7', name: 'YO OVA (MTN)', accountNumber: 'YO-MTN-002', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 15763 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
     { id: '8', name: 'YO OVA (Warid)', accountNumber: 'YO-WAR-003', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 116607794 }, lastReconciliation: '18/09/25 14:52:10', type: 'External' },
-    { id: '9', name: 'Fee Distribution', accountNumber: 'FEE-DIST-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 286939 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
-    { id: '10', name: 'Fee Earning', accountNumber: 'FEE-EARN-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 594628 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
-    { id: '11', name: 'Airtel Fee Earning', accountNumber: 'FEE-AIR-01', provider: 'Airtel', balance: { currency: 'UGX', amount: 132798 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
-    { id: '12', name: 'YO Fee Earning', accountNumber: 'FEE-YO-01', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 112340 }, lastReconciliation: '18/09/25 14:52:10', type: 'Fee' },
+    { id: '9', name: 'Fee Distribution', accountNumber: 'FEE-DIST-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 286939 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '10', name: 'Fee Earning', accountNumber: 'FEE-EARN-01', provider: 'VeryPay', balance: { currency: 'UGX', amount: 594628 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '11', name: 'Airtel Fee Earning', accountNumber: 'FEE-AIR-01', provider: 'Airtel', balance: { currency: 'UGX', amount: 132798 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
+    { id: '12', name: 'YO Fee Earning', accountNumber: 'FEE-YO-01', provider: 'Yo! Payments', balance: { currency: 'UGX', amount: 112340 }, lastReconciliation: '18/09/25 14:52:10', type: 'Internal' },
   ];
 
   const filteredWallets = filterType === 'All' ? wallets : wallets.filter(w => w.type === filterType || (filterType === 'External' && w.provider !== 'VeryPay'));
@@ -104,7 +115,7 @@ const WalletsListView: React.FC<Props> = ({ onWalletClick }) => {
     <div className="p-6 h-full overflow-y-auto font-sans bg-slate-50/50">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Wallet Management</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">System Wallet Management</h1>
           <p className="text-sm text-slate-500 mt-1">Monitor liquidity positions across internal and external accounts.</p>
         </div>
         <div className="flex items-center gap-3">
@@ -114,12 +125,10 @@ const WalletsListView: React.FC<Props> = ({ onWalletClick }) => {
         </div>
       </div>
 
-      <LiquidityOverview total={totalLiquidity} internal={internalTotal} external={externalTotal} currency="UGX" />
-
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
            <div className="flex p-1 bg-slate-100 rounded-lg self-start sm:self-auto">
-              {['All', 'Internal', 'External', 'Fee'].map((tab) => (
+              {['All', 'Internal', 'External'].map((tab) => (
                  <button
                     key={tab}
                     onClick={() => setFilterType(tab)}

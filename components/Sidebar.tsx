@@ -235,7 +235,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentView = 'transactio
             >
                <SubNavItem 
                   icon={<IconWallet className="w-3.5 h-3.5" />}
-                  label="Wallets" 
+                  label="System Wallets" 
                   isActive={currentView?.includes('wallet')}
                   onClick={() => onNavigate && onNavigate('accounting-wallets')} 
                />
