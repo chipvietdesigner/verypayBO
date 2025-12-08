@@ -3,7 +3,7 @@ import React from 'react';
 import TransactionInfo from './TransactionInfo';
 import FundsFlowVisualizer from './FundsFlowVisualizer';
 import LedgerTable from './LedgerTable';
-import { IconBack, IconCopy, IconDownload, IconInvoice } from './Icons';
+import { IconBack } from './Icons';
 import { TransactionData, TransactionStatus } from '../types';
 
 interface Props {
@@ -50,7 +50,7 @@ const TransactionDetailView: React.FC<Props> = ({ data, onBack }) => {
         {/* Compact Info Grid */}
         <TransactionInfo data={data} />
            
-        {/* Visualizer - Updated to take full data object */}
+        {/* Visualizer - Passing full data object to ensure correct dynamic values */}
         <FundsFlowVisualizer transactionData={data} />
 
         {/* Ledger */}

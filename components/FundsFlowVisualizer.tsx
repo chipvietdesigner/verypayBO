@@ -96,7 +96,7 @@ const PartyCard = ({
   label: string; 
   walletId: string; 
   amount: MoneyValue; 
-  fee: MoneyValue;
+  fee: string;
   total: MoneyValue;
   isSource: boolean;
 }) => (
@@ -122,7 +122,7 @@ const PartyCard = ({
        {/* Fee Line */}
        <div className="flex justify-between items-center text-xs">
           <span className="text-slate-500">Fee</span>
-          <span className="font-medium text-slate-900">{formatMoney(fee)}</span>
+          <span className="font-medium text-slate-900">{fee}</span>
        </div>
        {/* Total Line */}
        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
@@ -146,7 +146,7 @@ const DetailRow = ({ label, value }: { label: string, value: React.ReactNode }) 
 
 const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
   
-  const { type, status, payer, payee, grossAmount, amount: netAmount, providerReference, reference, creationDate, completedDate, message, paymentMethod } = transactionData;
+  const { type, status, payer, payee, grossAmount, amount: netAmount, requestAmount, providerReference, reference, creationDate, completedDate, message, paymentMethod } = transactionData;
   const isFailed = status === TransactionStatus.FAILED;
 
   // Logic to determine Flow Layout
@@ -169,6 +169,11 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
       </div>
   );
 
+  // Fee amount for displaying in flow
+  // We use specific payer or payee fee depending on the transaction type logic.
+  // Generally, if Payer Fee > 0, it's displayed (Funds In, Top Up). If Payee Fee > 0 (Funds Out), displayed.
+  const feeDisplay = payer.fee.amount > 0 ? payer.fee : payee.fee; 
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
       <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
@@ -188,9 +193,9 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
             <PartyCard 
               label="Source (Payer)" 
               walletId={payer.walletId} 
-              amount={payer.amount}
-              fee={payer.fee}
-              total={payer.total}
+              amount={payer.amount} // Nominal Amount
+              fee={''}
+              total={payer.total}   // Gross Amount (Debited)
               isSource={true} 
             />
           </div>
@@ -208,13 +213,14 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
               {isPaymentLike && (
                   <>
                      <FlowStep 
-                        title={`Request amount: ${formatMoney(payer.amount)}`}
+                        title={`Request amount: ${formatMoney(requestAmount)}`}
                         amount=""
                         type="in"
                       />
+                      {/* IMPORTANT: Transfer step uses nominal amount (payer.amount), NOT net amount */}
                       <FlowStep 
-                        title={`Transfer ${formatMoney(netAmount)}`}
-                        amount={formatMoney(netAmount)}
+                        title={`Transfer ${formatMoney(payer.amount)}`} 
+                        amount={formatMoney(payer.amount)} 
                         type="out"
                         isFailed={isFailed}
                         details={getCommonDetails('VeryPay Internal')}
@@ -226,7 +232,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
               {(isWalletTopUp || isFundsIn) && (
                   <>
                       <FlowStep 
-                        title="1. Collection" 
+                        title={`Collect ${formatMoney(grossAmount)}`}
                         amount={formatMoney(grossAmount)} 
                         type="in"
                         isFailed={isFailed}
@@ -240,8 +246,8 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
                         }
                       />
                       <FlowStep 
-                        title="2. Fee Deduction" 
-                        amount={formatMoney(payer.fee)} 
+                        title={`Fee ${formatMoney(feeDisplay)}`}
+                        amount={formatMoney(feeDisplay)} 
                         type="fee"
                         details={
                            <div className="space-y-1">
@@ -251,7 +257,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
                         }
                       />
                       <FlowStep 
-                        title="3. Disbursement" 
+                        title={`Disburse ${formatMoney(netAmount)}`}
                         amount={formatMoney(netAmount)} 
                         type="out"
                         details={
@@ -268,7 +274,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
               {isFundsOut && (
                   <>
                       <FlowStep 
-                        title="1. Collection" 
+                        title={`Collect ${formatMoney(grossAmount)}`}
                         amount={formatMoney(grossAmount)} 
                         type="in"
                         details={
@@ -278,15 +284,15 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
                         }
                       />
                       <FlowStep 
-                        title="2. Disbursement" 
+                        title={`Disburse ${formatMoney(netAmount)}`}
                         amount={formatMoney(netAmount)} 
                         type="out"
                         isFailed={isFailed}
                         details={getCommonDetails(paymentMethod)}
                       />
                        <FlowStep 
-                        title="3. Fee Deduction" 
-                        amount={formatMoney(payer.fee)} 
+                        title={`Fee ${formatMoney(feeDisplay)}`}
+                        amount={formatMoney(feeDisplay)} 
                         type="fee"
                         details={
                            <div className="space-y-1">
@@ -305,9 +311,9 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
              <PartyCard 
               label="Destination (Payee)" 
               walletId={payee.walletId} 
-              amount={payee.amount}
-              fee={payee.fee}
-              total={payee.total}
+              amount={payee.amount} // Nominal Amount
+                fee={''}
+              total={payee.total}   // Net Amount (Credited)
               isSource={false} 
             />
           </div>

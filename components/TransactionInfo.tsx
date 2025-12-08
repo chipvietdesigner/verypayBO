@@ -141,7 +141,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
                 </span>
             </div>
             <div className="bg-white border border-slate-200 rounded p-2.5 text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
-                {data.remark || <span className="text-slate-400 italic font-normal">No remark provided</span>}
+                {data.remark || <span className="text-slate-400 italic font-normal font-mono">No remark provided</span>}
             </div>
          </div>
 
@@ -152,7 +152,7 @@ const TransactionInfo: React.FC<Props> = ({ data }) => {
                     Message
                 </span>
             </div>
-            <div className="bg-white border border-slate-200 rounded p-2.5 text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
+            <div className="bg-white border border-slate-200 rounded p-2.5 font-mono text-xs text-slate-700 leading-relaxed break-all whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar shadow-inner min-h-[20px]">
                 {data.message || 'No system message available.'}
             </div>
          </div>
