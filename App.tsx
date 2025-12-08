@@ -46,7 +46,7 @@ const getMockDetailData = (item: TransactionListItem): TransactionData => {
             
     type: item.type,
     requestAmount: item.requestAmount,
-    grossAmount: item.requestAmount,
+    grossAmount:  { currency: item.requestAmount.currency, amount: Math.floor(item.requestAmount.amount + item.payerFee) },
     amount: { currency: item.requestAmount.currency, amount: Math.floor(item.requestAmount.amount * 0.99) },
     payer: {
        walletId: item.payerWalletId,
@@ -54,7 +54,7 @@ const getMockDetailData = (item: TransactionListItem): TransactionData => {
        fee: { currency: item.requestAmount.currency, amount: Number(item.payerFee) },
        fixedFee: { currency: item.requestAmount.currency, amount: Number(item.payeeFee) },
        percentageFee: '0%',
-       total: item.requestAmount,
+       total: { currency: item.requestAmount.currency, amount: Math.floor(item.requestAmount.amount + item.payerFee) },
     },
     payee: {
        walletId: item.payeeWalletId,

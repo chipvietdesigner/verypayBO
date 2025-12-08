@@ -172,8 +172,9 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
   // Fee amount for displaying in flow
   // We use specific payer or payee fee depending on the transaction type logic.
   // Generally, if Payer Fee > 0, it's displayed (Funds In, Top Up). If Payee Fee > 0 (Funds Out), displayed.
-  const feeDisplay = payer.fee.amount > 0 ? payer.fee : payee.fee; 
+   
 
+  const feeDisplay = { currency: payer.fee.currency, amount: Math.floor(payer.fee.amount + payee.fee.amount)}; 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
       <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
