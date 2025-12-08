@@ -54,7 +54,6 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Status</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Flow (Source → Destination)</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Payment method</th>
-            <th className="px-3 py-3 whitespace-nowrap font-semibold">School</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Serial number</th>
             <th className="px-3 py-3 whitespace-nowrap font-semibold">Message</th>
           </tr>
@@ -85,7 +84,6 @@ const TransactionListTable: React.FC<Props> = ({ transactions, onRowClick, total
                 </div>
               </td>
               <td className="px-3 py-2 text-slate-600 whitespace-nowrap">{tx.paymentMethod}</td>
-              <td className="px-3 py-2 text-slate-600 whitespace-nowrap">{tx.school}</td>
               <td className="px-3 py-2 font-mono text-slate-600 whitespace-nowrap">{tx.serialNumber}</td>
               <td className="px-3 py-2 text-slate-500 max-w-[200px] truncate" title={tx.message}>{tx.message}</td>
             </tr>
