@@ -204,9 +204,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
           {/* Center: Processing Engine */}
           <div className="lg:col-span-6 flex flex-col justify-center relative">
             <div className="absolute top-1/2 left-0 w-full h-px border-t border-dashed border-slate-200 -z-10 hidden lg:block"></div>
-            <div className="absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 hidden lg:block text-slate-300">
-               <IconArrowRight className="w-6 h-6" />
-            </div>
+          
 
             <div className="space-y-4 p-2 relative z-10">
               
