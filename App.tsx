@@ -79,8 +79,8 @@ const getMockDetailData = (item: TransactionListItem): TransactionData => {
 
   if (item.type === 'Funds in') {
       const currency = item.requestAmount.currency;
-      const grossVal = item.requestAmount.amount;
-      const feeVal = Math.round(grossVal * 0.1); 
+      const grossVal = item.requestAmount.amount + item.payerFee;
+      const feeVal = Math.round(grossVal * 0.01 ); 
       const netVal = grossVal - feeVal;
       const ovaOpening = 1000000;
       const walletOpening = 0;
@@ -112,7 +112,7 @@ const getMockDetailData = (item: TransactionListItem): TransactionData => {
       ];
   } else {
       const rawLedgerEntries = [
-        { id: '1', account: 'Wallet_Payer', accountType: 'Wallet', transactionType: item.type, indicator: 'Debit', amount: item.requestAmount },
+        { id: '1', account: 'Wallet_Payer', accountType: 'Wallet', transactionType: item.type, indicator: 'Debit',amount: { currency: item.requestAmount.currency, amount: Math.floor(Number(item.requestAmount.amount + item.payerFee))} },
         { id: '2', account: 'Wallet_Payee', accountType: 'Wallet', transactionType: item.type, indicator: 'Credit', amount: { currency: item.requestAmount.currency, amount: Math.floor(item.requestAmount.amount * 0.99) } },
       ];
 
