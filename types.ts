@@ -86,6 +86,8 @@ export interface TransactionListItem {
   type: TransactionType;
   payerWalletId: string;
   payeeWalletId: string;
+  payerFee:number;
+  payeeFee:number;
   status: TransactionStatus;
   message: string;
   school: string;

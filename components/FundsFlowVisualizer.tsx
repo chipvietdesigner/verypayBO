@@ -96,7 +96,7 @@ const PartyCard = ({
   label: string; 
   walletId: string; 
   amount: MoneyValue; 
-  fee: string;
+  fee: MoneyValue;
   total: MoneyValue;
   isSource: boolean;
 }) => (
@@ -122,7 +122,7 @@ const PartyCard = ({
        {/* Fee Line */}
        <div className="flex justify-between items-center text-xs">
           <span className="text-slate-500">Fee</span>
-          <span className="font-medium text-slate-900">{fee}</span>
+          <span className="font-medium text-slate-900">{formatMoney(fee)}</span>
        </div>
        {/* Total Line */}
        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
@@ -194,7 +194,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
               label="Source (Payer)" 
               walletId={payer.walletId} 
               amount={payer.amount} // Nominal Amount
-              fee={''}
+              fee={payer.fee}
               total={payer.total}   // Gross Amount (Debited)
               isSource={true} 
             />
@@ -246,7 +246,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
                         }
                       />
                       <FlowStep 
-                        title={`Fee ${formatMoney(feeDisplay)}`}
+                        title={`Fee ${(feeDisplay)}`}
                         amount={formatMoney(feeDisplay)} 
                         type="fee"
                         details={
@@ -312,7 +312,7 @@ const FundsFlowVisualizer: React.FC<Props> = ({ transactionData }) => {
               label="Destination (Payee)" 
               walletId={payee.walletId} 
               amount={payee.amount} // Nominal Amount
-                fee={''}
+              fee={payee.fee}
               total={payee.total}   // Net Amount (Credited)
               isSource={false} 
             />
